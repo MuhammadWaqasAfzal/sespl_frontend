@@ -1,0 +1,110 @@
+:root {
+  --employee-bg: #ffffff;
+  --employee-text: #030116;
+  --employee-button-bg: #05173b;
+  --employee-button-text: #ffffff;
+  --employee-button-hover-bg: #ffc400;
+  --employee-button-hover-text: #05173b;
+  --employee-delete-bg: #dc3545;
+  --employee-delete-hover-bg: #b02a37;
+  --employee-border: #ccc;
+  --employee-no-data-color: #777;
+}
+
+.employee-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: var(--employee-bg);
+  color: var(--employee-text);
+}
+
+.employee-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.heading {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--employee-text);
+}
+
+.add-btn {
+  background-color: var(--employee-button-bg);
+  color: var(--employee-button-text);
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.add-btn:hover {
+  background-color: var(--employee-button-hover-bg);
+  color: var(--employee-button-hover-text);
+  transform: scale(1.05);
+}
+
+.search-bar {
+  margin: 15px 0;
+  padding: 10px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 6px;
+  border: 1px solid var(--employee-border);
+  font-size: 0.95rem;
+}
+
+/* Table styling (if needed) */
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.employee-table th,
+.employee-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--employee-border);
+  text-align: left;
+}
+
+.employee-table thead {
+  background-color: var(--employee-text);
+  color: white;
+}
+
+.employee-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.employee-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Delete button */
+.delete-btn {
+  background-color: var(--employee-delete-bg);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.delete-btn:hover {
+  background-color: var(--employee-delete-hover-bg);
+}
+
+.no-data {
+  text-align: center;
+  font-weight: bold;
+  padding: 20px;
+  color: var(--employee-no-data-color);
+}

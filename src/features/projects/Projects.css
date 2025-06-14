@@ -1,0 +1,155 @@
+/* Project.css - Self-contained and clean */
+:root {
+  --app-button-bg: #05173b;
+  --app-button-text: #ffffff;
+  --app-button-hover-bg: #ffc400;
+  --app-button-hover-text: #05173b;
+
+  --app-error-color: #dc3545;
+  --app-header-color: #030116;
+  --app-input-border: #ccc;
+  --app-icon-edit: #007bff;
+  --app-icon-delete: #dc3545;
+
+  --font-family: Arial, sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background-color: #f5f5f5;
+}
+
+.projects-container {
+  padding: 0 3em;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.heading {
+  color: var(--app-header-color);
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/* Add project button */
+.add-project-button {
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: var(--app-button-bg);
+  color: var(--app-button-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.add-project-button:hover {
+  background-color: var(--app-button-hover-bg);
+  color: var(--app-button-hover-text);
+  transform: scale(1.25);
+}
+
+/* No data display */
+.no-data {
+  text-align: center;
+  font-weight: bold;
+  padding: 20px;
+}
+
+/* Icon buttons */
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 6px 8px;
+  margin: 0 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: #555;
+}
+
+.icon-button.edit {
+  color: var(--app-icon-edit);
+}
+
+.icon-button.delete {
+  color: var(--app-icon-delete);
+}
+
+.icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.icon-button:focus {
+  outline: 2px solid var(--app-button-bg);
+  outline-offset: 2px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.confirm-modal {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.modal.confirm-modal h3 {
+  margin-bottom: 10px;
+  color: var(--app-button-bg);
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Error message */
+.error {
+  color: var(--app-error-color);
+  margin-top: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Search bar */
+.search-bar {
+  margin: 15px 0;
+  padding: 10px;
+  width: 100%;
+  min-width: 370px;
+  max-width: 500px;
+  border-radius: 8px;
+  border: 1px solid var(--app-input-border);
+  font-size: 0.95rem;
+}

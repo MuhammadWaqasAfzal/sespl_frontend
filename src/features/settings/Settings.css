@@ -1,0 +1,331 @@
+
+
+:root {
+  --app-color: #2980b9;
+  --app-color-dark: #1c5980;
+  --text-color: #ffffff;
+  --accent-color: #44ab57;
+  --accent-hover: #36984b;
+  --border-color: #ddd;
+  --bg-light: #f9f9f9;
+  --table-alt: #f2f2f2;
+  --hover-row: #eaf3ff;
+  --font-main: 'Segoe UI', sans-serif;
+}
+
+.heading{
+  color: #030116;  
+}
+
+.settings-page {
+  padding: 1.5rem;
+  font-family: var(--font-main);
+  background-color: var(--bg-light);
+  box-sizing: border-box;
+}
+
+.settings-section {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.settings-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--app-color);
+  padding: 1rem;
+  font-weight: bold;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-section-header:hover {
+  background-color: var(--app-color-dark);
+}
+
+.permissions-content,
+.profile-content {
+  padding: 1rem;
+}
+
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 100%;
+}
+
+.permissions-table th,
+.permissions-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: 1px solid var(--border-color);
+}
+
+.permissions-table th {
+  background-color: var(--app-color);
+  color: var(--text-color);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.permissions-table tr:nth-child(even) {
+  background-color: var(--table-alt);
+}
+
+.permissions-table tr:hover {
+  background-color: var(--hover-row);
+}
+
+.permissions-table .action-icons {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.permissions-table tr:hover .action-icons {
+  opacity: 1;
+}
+
+.permissions-table .action-icons svg {
+  cursor: pointer;
+  color: var(--app-color);
+  font-size: 1.1rem;
+}
+
+.permissions-table .action-icons svg:hover {
+  color: var(--app-color-dark);
+}
+
+.permissions-table .action-icon.delete {
+  font-size: 1.5rem;
+  color: red;
+  cursor: pointer;
+}
+
+.add-permission-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+  border-radius: 50px;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.add-permission-btn:hover {
+  background-color: var(--accent-hover);
+  transform: scale(1.03);
+}
+
+.status-filter-buttons {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: 2px solid var(--border-color);
+  background-color: white;
+  color: var(--app-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  border-radius: 25px;
+}
+
+.filter-btn.active {
+  background-color: var(--app-color);
+  color: var(--text-color);
+}
+
+.filter-btn:hover {
+  background-color: var(--app-color-dark);
+  color: var(--text-color);
+}
+
+.loader {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--app-color);
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+}
+
+.profile-content p {
+  color: #34495e;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 1rem 1.5rem;
+  font-size: 1.25rem;
+  border: 4px solid var(--accent-color);
+  border-radius: 50px;
+  background-color: var(--app-color);
+  color: var(--text-color);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-btn:hover {
+  background-color: var(--accent-hover);
+  transform: scale(1.03);
+}
+
+/* Small Action Buttons */
+.small-btn {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.small-btn:hover {
+  transform: scale(1.1);
+}
+
+.small-btn.edit {
+  color: white;
+  background-color: var(--app-color);
+  border-radius: 5px;
+  padding: 0.4rem 0.6rem;
+}
+
+.small-btn.delete {
+  color: white;
+  background-color: red;
+  border-radius: 5px;
+  padding: 0.4rem 0.6rem;
+}
+
+.small-btn.edit:hover,
+.small-btn.delete:hover {
+  opacity: 0.9;
+}
+
+
+.styled-profile {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: 600;
+  color: #333;
+}
+
+.value {
+  color: #555;
+  text-align: right;
+}
+
+.designation-form {
+  margin: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.designation-form input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  
+  flex: 1;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: var(--app-button-bg);
+  color: var(--app-button-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #ffc400;
+  color: #030116;  
+  transform: scale(1.10);
+}
+
+
+.small-btn delete{
+  background-color: transparent;
+}
+
+.test{
+justify-self: endsettings-section; 
+   margin-bottom: 1rem;
+}
+
+
+.logout-section {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.logout-btn {
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  background-color: #05173b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #b02a37;
+  transform: scale(1.05);
+}

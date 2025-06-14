@@ -1,0 +1,130 @@
+.dashboard-container {
+  padding: 2rem;
+  background: #f4f6f9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-heading {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #343a40;
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.card-label {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.card-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #212529;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  gap: 2rem;
+}
+
+.chart-box {
+  background: white;
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chart-box h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+
+.card.card-0 {
+  background-color: #02111c; /* light blue */
+  color: #8eba4d;            /* dark blue */
+}
+
+.card.card-1 {
+  
+  background-color: #d5a403; /* light yellow */
+  color: #000000;            /* dark gold */
+}
+
+.card.card-2 {
+  background-color: #203d26; /* light green */
+  color: #ffffff;            /* dark green */
+}
+
+.card.card-3 {
+  background-color: #05173b; /* light red */
+  color: #ffc400;            /* dark red */
+}
+
+.card.card-4 {
+  background-color: #584c23; /* light gray */
+  color: #ffffff;
+}
+
+.card.card-5 {
+  background-color: #056070; /* light teal */
+  color: #ffffff;
+}
+
+.card.card-6 {
+  background-color: #840404; /* pink-ish */
+  color: #ffffff;
+}
+
+/* Optional: To make card text more readable */
+.card-label,
+.card-value {
+  color: inherit !important; /* Ensure child elements inherit text color */
+}
+
+.card-label {
+  font-size: 1rem;           /* Slightly larger than before */
+  font-weight: 500;
+  color: inherit;            /* Inherits text color from the card */
+  margin-bottom: 0.5rem;
+}
+
+.card-value {
+  font-size: 2.8rem;         /* Make the number stand out */
+  font-weight: bold;
+  color: inherit;            /* Inherits text color from the card */
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 2rem;
+}
+
+
+.scrollable-chart {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.scroll-wrapper {
+  min-width: 600px;
+  min-height: 300px;
+}

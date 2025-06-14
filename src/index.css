@@ -1,0 +1,121 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Simplified Color Scheme */
+  --app-color: #f2f2f2; /* light grey background */
+  --app-text-color: #1b1818;
+  --app-border-color: #ccc;
+  --app-button-bg: #020a17;
+  --app-button-text: #ffc400;
+  --app-button-hover-bg: var(--app-button-text);
+
+  color-scheme: light;
+  color: var(--app-text-color);
+  background-color: var(--app-color);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #000000;
+}
+
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  color: #1b1818;
+}
+
+thead {
+  background-color: #1b1818;
+  color: #fff;
+}
+
+th,
+td {
+  padding: 8px;
+  border: 1px solid var(--app-border-color);
+  text-align: left;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #eaeaea;
+}
+tbody tr:hover {
+  background-color: #d6d6d6;
+  cursor: pointer;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: var(--app-button-bg);
+  color: var(--app-button-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: var(--app-button-text);
+  color: var(--app-button-bg);
+  transform: scale(1.05);
+}
+
+.cancel-button {
+  background-color: #dc3545;
+  color: white;
+  font-weight: bold;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background-color: #b02a37;
+  color: var(--app-button-text);
+}
+
+.loading,
+.error {
+  padding: 1rem;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.error {
+  color: red;
+}
+
+.no-data {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  color: #555;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--app-text-color);
+}

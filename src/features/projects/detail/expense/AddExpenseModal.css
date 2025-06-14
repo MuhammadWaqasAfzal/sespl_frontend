@@ -1,0 +1,102 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 0 10px #333;
+}
+
+.modal input {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+
+
+.error-message {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+h2{
+    color: #05173b;
+
+}
+
+.modal label {
+  color: #05173b;
+  display: block;
+  margin-bottom: 0.3rem; /* adds some spacing below the label */
+  font-weight: 600; /* optional, just makes labels stand out */
+}
+.modal select,
+.modal input {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+.cancel-button {
+   flex: 1;
+  background-color: #dc3545;
+  color: white;
+  font-weight: bold;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+
+
+
+}
+
+.cancel-button:hover {
+  background-color: #b02a37;
+}
+
+.add-button {
+   flex: 1;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: var(--btn-hover-bg);
+  color: var(--btn-hover-text);
+  transform: scale(1.1);
+}
+
+
+
+
+
+
+

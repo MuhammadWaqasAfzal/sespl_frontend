@@ -1,0 +1,119 @@
+/* Login.css - Standalone Styling with Variables */
+:root {
+  --login-bg-color: #e0e0e0;
+  --form-bg: #ffffff;
+  --form-text: #1b1818;
+  --form-border: #ccc;
+  --input-border: #ccc;
+  --input-focus: #007bff;
+  --btn-bg: #020a17;
+  --btn-text: #ffc400;
+  --btn-hover-bg: #ffc400;
+  --btn-hover-text: #020a17;
+  --toggle-bg: #020a17;
+  --toggle-text: #ffc400;
+}
+
+/* Layout */
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--login-bg-color);
+  padding: 1rem;
+}
+
+/* Card Style */
+.login-form {
+  background: var(--form-bg);
+  padding: 40px 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Heading */
+.login-form h2 {
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  color: var(--form-text);
+  text-align: center;
+  font-weight: 700;
+}
+
+/* Labels */
+.login-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--form-text);
+  font-size: 0.95rem;
+}
+
+/* Inputs */
+.login-form input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  border: 1.5px solid var(--input-border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+.login-form input:focus {
+  border-color: var(--input-focus);
+  outline: none;
+}
+
+/* Password Field */
+.password-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.password-wrapper input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* Toggle Password Button */
+.toggle-password {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 6px;
+  background-color: var(--toggle-bg);
+  color: var(--toggle-text);
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-password:hover {
+  background-color: var(--btn-hover-bg);
+  color: var(--btn-hover-text);
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px 0;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: var(--btn-hover-bg);
+  color: var(--btn-hover-text);
+}

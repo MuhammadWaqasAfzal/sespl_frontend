@@ -1,0 +1,201 @@
+/* Reset and box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+    --app-color-hover: #0056b3;
+    --app-text-color: #ffffff;
+    --app-inactive-text: #05173b;
+    --app-inactive-bg: #f0f2f5;
+    --app-hover-bg: #958d8d;
+}
+
+html, body {
+  background: white;
+  background-color: white;
+  height: auto;       /* or min-height: 100vh */
+  overflow-y: auto;   /* Allow vertical scroll */
+  margin: 0;          /* Remove default margin */
+  padding: 0;
+}
+
+.full-bg {
+  background-color: #ededed;
+  width: 100%;
+  padding: 20px;
+  overflow-x: hidden;   /* Prevent horizontal scroll */
+  /* Don't fix height or overflow-y */
+}
+
+h2{
+  color: #17a2b8;
+}
+/* Project detail container */
+.project-detail-container {
+  padding: 2rem 0;
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  color: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header buttons container */
+.header-buttons {
+  display: flex;
+  justify-content: space-between; /* push buttons to edges */
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Headings spacing */
+h2, h3 {
+  margin-top: 1.5rem;
+}
+
+/* Payment table header */
+.payment-table th {
+  background-color: #17a2b8;
+  color: white;
+}
+
+/* Project info grid */
+.project-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  background: #908c8c;
+  color: #222;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual grid items */
+.project-info-grid div {
+  background: #fafafa;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Strong text inside grid */
+.project-info-grid div strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #444;
+}
+
+/* Full width grid items */
+.project-info-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+
+button {
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: var(--app-button-bg);
+  background-color: var(--app-button-bg);
+  color: var(--app-button-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #ffc400;
+  color: #030116;  
+  transform: scale(1.15);
+}
+
+
+.section-box {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+
+.selected-files ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.selected-files li {
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+
+.file-list-horizontal {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 10px 0;
+  gap: 12px;
+}
+
+.file-item {
+  background: #706f6f;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+
+.dropdown-section {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: #05173b;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.dropdown-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  font-weight: bold;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-section-header:hover {
+  background-color: var(--app-color-dark);
+}

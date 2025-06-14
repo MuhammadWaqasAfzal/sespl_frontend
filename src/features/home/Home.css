@@ -1,0 +1,82 @@
+/* Home.css - Fully self-contained */
+:root {
+  --app-color: #05173b;
+  --app-color-hover: #0056b3;
+  --app-text-color: #ffffff;
+  --app-inactive-text: #05173b;
+  --app-inactive-bg: #f0f2f5;
+
+  --font-family: Arial, sans-serif;
+}
+
+/* Reset and base layout */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-family);
+  background-color: #f3f1f1;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+.home-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.side-menu {
+  width: 200px;
+  background-color: var(--app-inactive-bg);
+  padding: 1rem;
+  border-right: 1px solid #ccc;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.side-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.side-menu li {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  color: var(--app-inactive-text);
+  background-color: var(--app-inactive-bg);
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.side-menu li:hover {
+  background-color: #ffc400;
+  color: #05173b;
+}
+
+.side-menu li.selected {
+  background-color: var(--app-color);
+  color: var(--app-text-color);
+  font-weight: bold;
+  transform: scale(1.03);
+}
+
+/* Content area */
+.main-content {
+  flex-grow: 1;
+  padding: 1rem;
+  background-color: #ffffff;
+  overflow-y: auto;
+}
+
+
+
