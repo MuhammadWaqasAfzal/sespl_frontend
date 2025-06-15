@@ -88,7 +88,7 @@ const Employee = () => {
   return (
     <div className="employee-container">
       <div className="employee-header">
-        <h2>Employees</h2>
+       <h2 className="heading">Employees</h2>
         {Helper.checkPermission('editEmployees') && (
         <button className="add-btn" 
                 onClick={() => setShowAddModal(true)}

@@ -10,7 +10,11 @@
   --employee-border: #ccc;
   --employee-no-data-color: #777;
 }
-
+button.disabled {
+  opacity: 0.9;
+  pointer-events: none;
+  cursor: not-allowed;
+}
 
 .employee-container {
   padding: 20px;
