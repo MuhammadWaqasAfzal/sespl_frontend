@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './Client.css';
-import { BASE_URL } from '../../constants';
+import { BASE_URL } from '../../utils/constants';
 import AddClientModal from './addClient/AddClientModal';
 import EditClientModal from './editClient/EditClientModal';
+import Helper from '../../utils/hepler';
 
 export default function Client() {
   const [clients, setClients] = useState([]);
@@ -74,9 +75,12 @@ export default function Client() {
     <div className="clients-container">
       <div className="clients-header">
         <h1 className="heading">All Clients</h1>
-        <button className="add-client-button" onClick={() => setShowAddModal(true)}>
-          + Add Client
-        </button>
+
+        {Helper.checkPermission('editClients') && (
+          <button className="add-client-button" onClick={() => setShowAddModal(true)}>
+            + Add Client
+          </button>
+        )}
       </div>
 
       <input
@@ -97,7 +101,10 @@ export default function Client() {
             <th>Address</th>
             <th>Comments</th>
             <th>Created At</th>
-            <th>Action</th>
+
+            {Helper.checkPermission('editClients') && (
+              <th>Action</th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -115,25 +122,28 @@ export default function Client() {
                 <td>{client.address}</td>
                 <td>{client.comments}</td>
                 <td>{formatDate(client.created_at)}</td>
-                <td>
-                  <button 
-                   className="icon-button edit"
-                    onClick={() => setClientToEdit(client)}
-                   
-                    aria-label={`Edit client ${client.name}`}
-                    title="Edit client"
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    onClick={() => setClientToDelete(client)}
-                    className="icon-button delete"
-                    aria-label={`Delete client ${client.name}`}
-                    title="Delete client"
-                  >
-                    🗑️
-                  </button>
-                </td>
+                
+                {Helper.checkPermission('editClients') && (
+                  <td>
+                    <button 
+                    className="icon-button edit"
+                      onClick={() => setClientToEdit(client)}
+                    
+                      aria-label={`Edit client ${client.name}`}
+                      title="Edit client"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={() => setClientToDelete(client)}
+                      className="icon-button delete"
+                      aria-label={`Delete client ${client.name}`}
+                      title="Delete client"
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                )}
               </tr>
             ))
           )}

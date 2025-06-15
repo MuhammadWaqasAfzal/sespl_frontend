@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './PaymentModal.css';
-import { BASE_URL } from '../../../../constants';
+import { BASE_URL } from '../../../../utils/constants';
 
 export default function PaymentModal({ onClose, onSave, projectId }) {
   const [formData, setFormData] = useState({

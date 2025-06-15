@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-
+import Helper from '../../../../utils/hepler'
 export default function ExpensesSection({ expenses, expenseTypes, designations, onAdd, onDelete }) {
   const [visible, setVisible] = useState(false);
   return (
@@ -12,9 +12,11 @@ export default function ExpensesSection({ expenses, expenseTypes, designations, 
       {visible && (
         <div className="section-box">
           <h2>Project Expenses</h2>
-          <div className="header-buttons">
-            <button onClick={onAdd}>Add New Expense</button>
-          </div>
+          {Helper.checkPermission('editExpenses') && (
+            <div className="header-buttons">
+              <button onClick={onAdd}>Add New Expense</button>
+            </div>
+          )}
           {expenses.length === 0 ? (
             <p className="no-data">⚠️ No expenses found for this project.</p>
           ) : (
@@ -29,7 +31,10 @@ export default function ExpensesSection({ expenses, expenseTypes, designations, 
                   <th>Date</th>
                   <th>Created At</th>
                   <th>Updated At</th>
-                  <th>Actions</th>
+
+                  {Helper.checkPermission('editExpenses') && (
+                    <th>Actions</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -43,11 +48,14 @@ export default function ExpensesSection({ expenses, expenseTypes, designations, 
                     <td>{new Date(exp.date).toLocaleDateString()}</td>
                     <td>{new Date(exp.created_at).toLocaleString()}</td>
                     <td>{new Date(exp.updated_at).toLocaleString()}</td>
-                    <td>
-                      <button className="small-btn delete" onClick={() => onDelete(exp.id)}>
-                        <FaTrashAlt />
-                      </button>
-                    </td>
+
+                    {Helper.checkPermission('editExpenses') && (
+                      <td>
+                        <button className="small-btn delete" onClick={() => onDelete(exp.id)}>
+                          <FaTrashAlt />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

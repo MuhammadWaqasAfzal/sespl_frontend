@@ -34,6 +34,7 @@ html, body, #root {
 /* Sidebar */
 .side-menu {
   width: 200px;
+  min-width: 200px;
   background-color: var(--app-inactive-bg);
   padding: 1rem;
   border-right: 1px solid #ccc;
@@ -77,6 +78,10 @@ html, body, #root {
   background-color: #ffffff;
   overflow-y: auto;
 }
+
+
+
+
 
 
 

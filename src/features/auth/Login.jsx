@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
-import { BASE_URL } from '../../constants';
+import { BASE_URL } from '../../utils/constants';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './Projects.css';
 import '../../index.css';
-import { BASE_URL } from '../../constants';
+import { BASE_URL } from '../../utils/constants';
 import AddProjectModal from './AddProjectModal';
 import { useNavigate } from 'react-router-dom';
+import Helper from '../../utils/hepler';
 
 export default function Projects() {
   const navigate = useNavigate();
@@ -81,9 +82,11 @@ const [costSummary, setCostSummary] = useState({
     <div className="projects-container">
       <div className="projects-header">
         <h1 className='heading'>All Projects</h1>
-        <button className="add-project-button" onClick={() => { refreshClients(); setShowAddModal(true); }}>
-          + Add Project
-        </button>
+        {Helper.checkPermission('editProjects') && (
+          <button className="add-project-button" onClick={() => { refreshClients(); setShowAddModal(true); }}>
+            + Add Project
+          </button>
+        )}
       </div>
 
         <input
@@ -103,7 +106,8 @@ const [costSummary, setCostSummary] = useState({
             <th>Unit Name</th>
             <th>Project Manager</th>
             <th>PO Number</th>
-            <th>Action</th>
+            
+             {Helper.checkPermission('editProjects') && (<th>Action</th> )}
           </tr>
         </thead>
         <tbody>
@@ -111,7 +115,9 @@ const [costSummary, setCostSummary] = useState({
             <tr key={project.id}
               onClick={(e) => {
                 if (e.target.tagName.toLowerCase() !== 'button') {
-                  navigate('/project-detail', { state: { project } });
+                  if( Helper.checkPermission('viewProjectDetail')){
+                    navigate('/project-detail', { state: { project } });
+                  }
                 }
               }}
               style={{ cursor: 'pointer' }}>
@@ -122,18 +128,20 @@ const [costSummary, setCostSummary] = useState({
               <td>{project.unit_name}</td>
               <td>{project.project_manager_name}</td>
               <td>{project.po_number}</td>
-              <td>
-                <button
-                  onClick={() => {
-                            setDeleteError('');
-                            setProjectToDelete(project);
-                          }}
-                  title="Delete project"
-                  className="icon-button delete"
-                >
-                  🗑️
-                </button>
-              </td>
+              {Helper.checkPermission('editProjects') && (
+                <td>
+                  <button
+                    onClick={() => {
+                              setDeleteError('');
+                              setProjectToDelete(project);
+                            }}
+                    title="Delete project"
+                    className="icon-button delete"
+                  >
+                    🗑️
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
           {filteredProjects.length === 0 && (

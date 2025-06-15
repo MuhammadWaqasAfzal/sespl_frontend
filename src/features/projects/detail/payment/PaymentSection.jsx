@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-
+import Helper from '../../../../utils/hepler'
 export default function PaymentsSection({ payments, onAdd, onDelete }) {
   const [visible, setVisible] = useState(false);
 
@@ -13,9 +13,11 @@ export default function PaymentsSection({ payments, onAdd, onDelete }) {
       {visible && (
         <div className="section-box">
           <h2>Payment Schedule</h2>
-          <div className="header-buttons">
-            <button onClick={onAdd}>Add New Payment</button>
-          </div>
+             {Helper.checkPermission('editPayments') && (
+              <div className="header-buttons">
+                <button onClick={onAdd}>Add New Payment</button>
+              </div>
+             )}
           {payments.length === 0 ? (
             <p className="no-data">⚠️ No payments found for this project.</p>
           ) : (
@@ -30,7 +32,8 @@ export default function PaymentsSection({ payments, onAdd, onDelete }) {
                   <th>Date on Cheque</th>
                   <th>Bank</th>
                   <th>Branch</th>
-                  <th>Actions</th>
+                  
+                     {Helper.checkPermission('editPayments') && (<th>Actions</th>)}
                 </tr>
               </thead>
               <tbody>
@@ -44,11 +47,13 @@ export default function PaymentsSection({ payments, onAdd, onDelete }) {
                     <td>{new Date(p.date_on_cheque).toLocaleDateString()}</td>
                     <td>{p.bank}</td>
                     <td>{p.branch}</td>
+                     {Helper.checkPermission('editPayments') && (
                     <td>
                       <button className="small-btn delete" onClick={() => onDelete(p.id)}>
                         <FaTrashAlt />
                       </button>
                     </td>
+                     )}
                   </tr>
                 ))}
               </tbody>

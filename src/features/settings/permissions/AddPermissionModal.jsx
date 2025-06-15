@@ -1,130 +1,134 @@
-
+// src/components/settings/permissions/AddPermissionModal.jsx
 import React, { useState, useEffect } from 'react';
+import { BASE_URL } from '../../../utils/constants';        // adjust the path
 import './AddPermissionModal.css';
 
-function AddPermissionModal({ isOpen, onClose, onSave }) {
-  const defaultPermissionData = {
-    name: '',
-    read_employees: false,
-    create_employees: false,
-    update_employees: false,
-    delete_employees: false,
-    read_sites: false,
-    create_sites: false,
-    update_sites: false,
-    delete_sites: false,
-    read_shifts: false,
-    create_shifts: false,
-    update_shifts: false,
-    delete_shifts: false,
-    assign_shifts: false,
-    checkin_shifts: false,
-    checkout_shifts: false,
-    accounts: false,
-  };
+const DEFAULT_PERM = {
+  name: '',
 
-  const [permissionData, setPermissionData] = useState(defaultPermissionData);
-  const [errorMessage, setErrorMessage] = useState('');
+  login: true,                     // most roles need Login
+  viewProjects: true,
+  editProjects: true,
+  viewProjectDetail: true,
+  editProjectDetail: true,
+  viewClients: true,
+  editClients: true,
+  viewEmployees: true,
+  editEmployees: true,
+  viewInventory: true,
+  editInventory: true,
+  settings: true,
+  editPayments: true,
+  editExpenses: true,
+  editDocuments: true,
+  viewPermissions: true,
+  editPermissions: true,
+  viewDesignations: true,
+  editDesignations: true,
+  viewExpenseTypes: true,
+  editExpenseTypes: true,
+};
 
+export default function AddPermissionModal({ isOpen, onClose, onSave }) {
+  const [perm, setPerm]      = useState(DEFAULT_PERM);
+  const [err, setErr]        = useState('');
+
+  /* reset state every time the dialog opens */
   useEffect(() => {
     if (isOpen) {
-      setPermissionData(defaultPermissionData);
-      setErrorMessage('');
+      setPerm(DEFAULT_PERM);
+      setErr('');
     }
   }, [isOpen]);
 
-  const handleChange = (e) => {
-    const { name } = e.target;
-    setPermissionData((prevData) => ({
-      ...prevData,
-      [name]: !prevData[name],
-    }));
-  };
+  /* ----- handlers ----- */
+  const toggle = (e) =>
+    setPerm((p) => ({ ...p, [e.target.name]: !p[e.target.name] }));
 
-  const handleNameChange = (e) => {
-    const { value } = e.target;
-    setPermissionData((prevData) => ({
-      ...prevData,
-      name: value,
-    }));
-  };
+  const setName = (e) =>
+    setPerm((p) => ({ ...p, name: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
+    if (!perm.name.trim()) return setErr('Permission name is required');
 
-    if (!permissionData.name) {
-      setErrorMessage('Permission name is required!');
-      return;
-    }
-
-    fetch('http://localhost:5000/api/permission/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(permissionData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message === 'Permission set created successfully.') {
-          onSave();
-          onClose();
-        } else {
-          setErrorMessage(data.message || 'Failed to create permission.');
-        }
-      })
-      .catch((err) => {
-        console.error('Error creating permission:', err);
-        setErrorMessage('An error occurred while creating permission.');
+    try {
+      const res  = await fetch(`${BASE_URL}/permission/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(perm),
       });
+      const data = await res.json();
+
+      if (res.status === 201) {
+        onSave();
+        onClose();
+      } else {
+        setErr(data.message || 'Failed to create permission.');
+      }
+    } catch (ex) {
+      console.error(ex);
+      setErr('Network error. Please try again.');
+    }
   };
 
   if (!isOpen) return null;
 
+  const label = (key) =>
+    key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, (c) => c.toUpperCase());
+
+  /* ----- UI ----- */
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="apm-overlay" onClick={onClose}>
+      <div className="apm-dialog" onClick={(e) => e.stopPropagation()}>
         <h2>Create New Permission</h2>
-        {errorMessage && <div className="error-message">{errorMessage}</div>}
-        <div className="form-group">
-          <label>Permission Name</label>
-          <input
-            type="text"
-            name="name"
-            placeholder="Permission Name"
-            value={permissionData.name}
-            onChange={handleNameChange}
-            aria-label="Permission Name"
-          />
-        </div>
 
-        <div className="permission-list">
-          {Object.keys(permissionData).map(
-            (key) =>
-              key !== 'name' && (
-                <div key={key} className="checkbox-group">
-                  <label className="checkbox-wrapper">
-                    <input
-                      type="checkbox"
-                      name={key}
-                      checked={permissionData[key]}
-                      onChange={handleChange}
-                    />
-                    <span className="checkmark"></span>
-                    {key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                  </label>
-                </div>
-              )
-          )}
-        </div>
+        {err && <div className="apm-error">{err}</div>}
 
-        <div className="modal-actions">
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={handleSubmit}>Save</button>
-        </div>
+        <form onSubmit={submit}>
+          <div className="apm-input">
+            <input
+              type="text"
+              placeholder="Permission Name"
+              value={perm.name}
+              onChange={setName}
+            />
+          </div>
+
+          {/* grid */}
+          <div className="apm-grid">
+            {Object.keys(perm)
+              .filter((k) => k !== 'name')
+              .map((key) => (
+                <label key={key} className="apm-checkbox">
+                  <input
+                    type="checkbox"
+                    name={key}
+                    checked={perm[key]}
+                    onChange={toggle}
+                  />
+                  <span className="check" />
+                  {label(key)}
+                </label>
+              ))}
+          </div>
+
+          <div className="apm-actions">
+            <button
+              type="button"
+              className="apm-btn cancel"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="apm-btn save">
+              Save
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
 }
-
-export default AddPermissionModal;

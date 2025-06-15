@@ -17,8 +17,6 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
     .filter(e => e.value > 0)
     .sort((a, b) => b.value - a.value);
 
-    console.log("Waqas");
-    console.log(expenses,costSummary);
   const totalWithTax = costSummary.withTax || 0;
   const totalWithoutTax = costSummary.withoutTax || 0;
   const totalSpent = costSummary.totalSpent || 0;

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './settings.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import AddPermissionModal from './permissions/AddPermissionModal';
+import EditPermissionModal from './permissions/EditPermissionModal';
 import ConfirmDeleteModal from '../ConfirmDeleteModal';
-import { BASE_URL } from '../../constants';
+import { BASE_URL } from '../../utils/constants';
+import Helper from '../../utils/hepler'
 
 
 function Settings() {
@@ -21,6 +23,9 @@ function Settings() {
   const [expenses, setExpenses] = useState([]);
   const [expenseVisible, setExpenseVisible] = useState(false);
   const [newExpenseType, setNewExpenseType] = useState('');
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [permToEdit,    setPermToEdit]    = useState(null);
 
     useEffect(() => {
     const cachedExpenses = localStorage.getItem('expenses');
@@ -188,14 +193,20 @@ const handleAddDesignation = () => {
       .catch((err) => console.error('Failed to create permission:', err));
   };
 
+  const refreshPermissions = () =>
+  fetch(`${BASE_URL}/permission/getAll`)
+    .then((r) => r.json())
+    .then((d) => setPermissions(d.data));
+
   const handleDeletePermissionClick = (permission) => {
     setPermissionToDelete(permission);
     setIsDeleteModalOpen(true);
   };
 
-  const handleDeletePermission = (id) => {
+  const handleDeletePermission = () => {
+   
     if (permissionToDelete) {
-      fetch(`${BASE_URL}/permission/delete/${id}`, {
+      fetch(`${BASE_URL}/permission/delete/${permissionToDelete.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -231,94 +242,131 @@ const handleAddDesignation = () => {
 
 
 
-{/* permissions */}
-      <div style={{ display: 'none' }} className="settings-section">
-        <div
-          className="settings-section-header"
-          onClick={() => setPermissionsVisible(!permissionsVisible)}
-        >
-          <h3>🔐 Permissions</h3>
-          <span>{permissionsVisible ? '▲' : '▼'}</span>
-        </div>
-        {permissionsVisible && (
-          <div className="permissions-content">
-            <button className='test' onClick={handleAddPermissionClick}>
-              Add Permission
-            </button>
-            <div style={{ overflowX: 'auto' }}>
-              <table className="permissions-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Read Projects</th>
-                    <th>Create Projects</th>
-                    <th>Update Projects</th>
-                    <th>Delete Projects</th>
-                    <th>Read Payements</th>
-                    <th>Create Payements</th>
-                    <th>Update Payements</th>
-                    <th>Delete Payements</th>
-                    <th>Read Designation</th>
-                    <th>Create Designations</th>
-                    <th>Create Permissions</th>
-                    <th>Read Permissions</th>
-                    <th>Update Permissionss</th>
-                    <th>Read Expenses</th>
-                    <th>Create Expenses</th>
-                    <th>Update Expenses</th>
-                    <th>Delete Expenses</th>
-                    <th>Checkin Shifts</th>
-                    <th>Checkout Shifts</th>
-                    <th>Accounts</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {permissions.map((perm, index) => (
-                    <tr key={index}>
-                      <td>{perm.name}</td>
-                      <td>{perm.create_project ? '✅' : '❌'}</td>
-                      <td>{perm.read_project ? '✅' : '❌'}</td>
-                      <td>{perm.update_project ? '✅' : '❌'}</td>
-                      <td>{perm.delete_project ? '✅' : '❌'}</td>
-                      <td>{perm.read_payement ? '✅' : '❌'}</td>
-                      <td>{perm.create_payement ? '✅' : '❌'}</td>
-                      <td>{perm.update_payemenyt ? '✅' : '❌'}</td>
-                      <td>{perm.delete_payement ? '✅' : '❌'}</td>
-                       <td>{perm.read_designation ? '✅' : '❌'}</td>
-                      <td>{perm.create_designation ? '✅' : '❌'}</td>
-                      <td>{perm.create_permission ? '✅' : '❌'}</td>
-                      <td>{perm.read_permission ? '✅' : '❌'}</td>
-                      <td>{perm.update_permission ? '✅' : '❌'}</td>
-                      <td>{perm.read_expense ? '✅' : '❌'}</td>
-                      <td>{perm.create_expense ? '✅' : '❌'}</td>
-                      <td>{perm.update_expense ? '✅' : '❌'}</td>
-                      <td>{perm.delete_expense ? '✅' : '❌'}</td>
- <td>{perm.update_expense ? '✅' : '❌'}</td>
-                      <td>{perm.delete_expense ? '✅' : '❌'}</td>
-                                            <td>{perm.delete_expense ? '✅' : '❌'}</td>
+      {/* permissions */}
 
-                      <td>
-                        <div className="action-buttons">
-                          <button className="small-btn edit">
-                            <FaEdit />
-                          </button>
-                          <button
-                            className="small-btn delete"
-                            onClick={() => handleDeletePermissionClick(perm)}
-                          >
-                            <FaTrashAlt />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      {Helper.checkPermission('viewPermissions') && (
+        <div  className="settings-section">
+          <div
+            className="settings-section-header"
+            onClick={() => setPermissionsVisible(!permissionsVisible)}
+          >
+            <h3>🔐 Permissions</h3>
+            <span>{permissionsVisible ? '▲' : '▼'}</span>
           </div>
-        )}
-      </div>
+          {permissionsVisible && (
+            <div className="permissions-content">
+              {Helper.checkPermission('editPermissions') && (
+                <button className='test' onClick={handleAddPermissionClick}>
+                  Add Permission
+                </button>
+              )}
+              <div style={{ overflowX: 'auto' }}>
+                <table className="permissions-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Login</th>
+                      <th>View Projects</th>
+                      <th>Edit Projects</th>
+
+                      <th>View ProjectDetail</th>
+                      <th>Edit ProjectDetail</th>
+
+                      <th>View Clients</th>
+                      <th>Edit Clients</th>
+
+                      <th>View Employees</th>
+                      <th>Edit Employees</th>
+
+                      <th>View Inventory</th>
+                      <th>Edit Inventory</th>
+
+                      <th>Settings</th>
+
+                      <th>Edit Payments</th>
+                      <th>Edit Expenses</th>
+                      <th>Edit Documents</th>
+
+                      <th>View Permissions</th>
+                      <th>Edit Permissions</th>
+
+                      <th>View Designations</th>
+                      <th>Edit Designations</th>
+
+                      <th>View ExpenseTypes</th>
+                      <th>Edit ExpenseTypes</th>
+
+                    
+                      {Helper.checkPermission('editPermissions') && (
+                       <th>Actions</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {permissions.map((perm, index) => (
+                      <tr key={index}>
+                        <td>{perm.name}</td>
+                        <td>{perm.login ? '✅' : '❌'}</td>
+                        <td>{perm.viewProjects ? '✅' : '❌'}</td>
+                        <td>{perm.editProjects ? '✅' : '❌'}</td>
+
+                        <td>{perm.viewProjectDetail ? '✅' : '❌'}</td>
+                        <td>{perm.editProjectDetail ? '✅' : '❌'}</td>
+
+                        <td>{perm.viewClients ? '✅' : '❌'}</td>
+                        <td>{perm.editClients ? '✅' : '❌'}</td>
+
+                        <td>{perm.viewEmployees ? '✅' : '❌'}</td>
+                        <td>{perm.editEmployees ? '✅' : '❌'}</td>
+
+                        <td>{perm.viewInventory ? '✅' : '❌'}</td>
+                        <td>{perm.editInventory ? '✅' : '❌'}</td>
+
+                        <td>{perm.settings ? '✅' : '❌'}</td>
+
+                        <td>{perm.editPayments ? '✅' : '❌'}</td>
+                        <td>{perm.editExpenses ? '✅' : '❌'}</td>
+                        <td>{perm.editDocuments ? '✅' : '❌'}</td>
+
+                        <td>{perm.viewPermissions ? '✅' : '❌'}</td>
+                        <td>{perm.editPermissions ? '✅' : '❌'}</td>
+
+                        <td>{perm.viewDesignations ? '✅' : '❌'}</td>
+                        <td>{perm.editDesignations ? '✅' : '❌'}</td>
+
+                        <td>{perm.viewExpenseTypes ? '✅' : '❌'}</td>
+                        <td>{perm.editExpenseTypes ? '✅' : '❌'}</td>
+                    
+  
+                        {Helper.checkPermission('editPermissions') && (
+                          <td>
+                            <div className="action-buttons">
+                              <button
+                                className="small-btn edit"
+                                onClick={() => {
+                                  setPermToEdit(perm);      // ← store row object
+                                  setEditModalOpen(true);   // ← open modal
+                                }}>
+                                    <FaEdit />
+                              </button>
+                              <button
+                                className="small-btn delete"
+                                onClick={() => handleDeletePermissionClick(perm)}
+                              >
+                                <FaTrashAlt />
+                              </button>
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
 {/* profile */}
       <div className="settings-section">
@@ -356,116 +404,139 @@ const handleAddDesignation = () => {
       </div>
 
 {/* designations */}
-      <div className="settings-section">
-        <div
-          className="settings-section-header"
-          onClick={() => setDesignationVisible(!designationVisible)}
-        >
-          <h3>🏷️ Designations</h3>
-          <span>{designationVisible ? '▲' : '▼'}</span>
-        </div>
-        {designationVisible && (
-          <div className="designations-content">
-            <div className="designation-form">
-              <input
-                type="text"
-                value={newDesignation}
-                placeholder="Enter new designation"
-                onChange={(e) => setNewDesignation(e.target.value)}
-              />
-              <button  onClick={handleAddDesignation}>
-                Add Designation
-              </button>
-            </div>
 
-            <div style={{ overflowX: 'auto' }}>
-              <table className="designations-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {designations.map((desig) => (
-                    <tr key={desig.id}>
-                      <td>{desig.id}</td>
-                      <td>{desig.title}</td>
-                      <td>
-                        <div className="action-buttons">
-                          {/* <button className="small-btn edit">
-                            <FaEdit />
-                          </button> */}
-                          <button className="small-btn delete"  onClick={() => handleDeleteDesignation(desig.id)} >
-                            <FaTrashAlt />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      {Helper.checkPermission('viewDesignations') && (
+        <div className="settings-section">
+          <div
+            className="settings-section-header"
+            onClick={() => setDesignationVisible(!designationVisible)}
+          >
+            <h3>🏷️ Designations</h3>
+            <span>{designationVisible ? '▲' : '▼'}</span>
           </div>
-        )}
-      </div>
+          {designationVisible && (
+            <div className="designations-content">
+
+              {Helper.checkPermission('editDesignations') && (
+                <div className="designation-form">
+                  <input
+                    type="text"
+                    value={newDesignation}
+                    placeholder="Enter new designation"
+                    onChange={(e) => setNewDesignation(e.target.value)}
+                  />
+                  <button  onClick={handleAddDesignation}>
+                    Add Designation
+                  </button>
+                </div>
+              )}
+
+              <div style={{ overflowX: 'auto' }}>
+                <table className="designations-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Title</th>
+
+                      {Helper.checkPermission('editDesignations') && (
+                        <th>Actions</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {designations.map((desig) => (
+                      <tr key={desig.id}>
+                        <td>{desig.id}</td>
+                        <td>{desig.title}</td>
+
+                        {Helper.checkPermission('editDesignations') && (
+                          <td>
+                            <div className="action-buttons">
+                              {/* <button className="small-btn edit">
+                                <FaEdit />
+                              </button> */}
+                              <button className="small-btn delete"  onClick={() => handleDeleteDesignation(desig.id)} >
+                                <FaTrashAlt />
+                              </button>
+                            </div>
+                        </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* expenseTypes */}
-      <div className="settings-section">
-  <div
-    className="settings-section-header"
-    onClick={() => setExpenseVisible(!expenseVisible)}
-  >
-    <h3>💸 Expense Types</h3>
-    <span>{expenseVisible ? '▲' : '▼'}</span>
-  </div>
-  {expenseVisible && (
-    <div className="designations-content">
-      <div className="designation-form">
-        <input
-          type="text"
-          value={newExpenseType}
-          placeholder="Enter new expense type"
-          onChange={(e) => setNewExpenseType(e.target.value)}
-        />
-        <button  onClick={handleAddExpense}>
-          Add Expense Type
-        </button>
-      </div>
+      {Helper.checkPermission('viewExpenseTypes') && (
+        <div className="settings-section">
+          <div
+            className="settings-section-header"
+            onClick={() => setExpenseVisible(!expenseVisible)}
+          >
+            <h3>💸 Expense Types</h3>
+            <span>{expenseVisible ? '▲' : '▼'}</span>
+          </div>
+          {expenseVisible && (
+            <div className="designations-content">
+              {Helper.checkPermission('editExpenseTypes') && (
+                <div className="designation-form">
+                  <input
+                    type="text"
+                    value={newExpenseType}
+                    placeholder="Enter new expense type"
+                    onChange={(e) => setNewExpenseType(e.target.value)}
+                  />
+                  <button  onClick={handleAddExpense}>
+                    Add Expense Type
+                  </button>
+                </div>
+              )}
 
-      <div style={{ overflowX: 'auto' }}>
-        <table className="designations-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.map((exp) => (
-              <tr key={exp.id}>
-                <td>{exp.id}</td>
-                <td>{exp.type}</td>
-                <td>
-                  <div className="action-buttons">
-                    <button
-                      className="small-btn delete"
-                      onClick={() => handleDeleteExpense(exp.id)}
-                    >
-                      <FaTrashAlt />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )}
-      </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table className="designations-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Type</th>
+
+                      {Helper.checkPermission('editExpenseTypes') && (
+                        <th>Actions</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {expenses.map((exp) => (
+                      <tr key={exp.id}>
+                        <td>{exp.id}</td>
+                        <td>{exp.type}</td>
+
+                        {Helper.checkPermission('editExpenseTypes') && (
+                          <td>
+                            <div className="action-buttons">
+                              <button
+                                className="small-btn delete"
+                                onClick={() => handleDeleteExpense(exp.id)}
+                              >
+                                <FaTrashAlt />
+                              </button>
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
 
       <div className="logout-section">
 
@@ -485,6 +556,13 @@ const handleAddDesignation = () => {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onSave={handleSavePermission}
+      />
+
+      <EditPermissionModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        permission={permToEdit}
+        onUpdated={refreshPermissions}
       />
 
       <ConfirmDeleteModal

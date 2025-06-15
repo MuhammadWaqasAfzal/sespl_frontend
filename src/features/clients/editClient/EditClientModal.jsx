@@ -1,7 +1,7 @@
 // src/components/Clients/EditClientModal.js
 import React, { useState } from 'react';
 import './EditClientModal.css';
-import { BASE_URL } from '../../../constants';
+import { BASE_URL } from '../../../utils/constants';
 
 export default function EditClientModal({ client, onClose, refreshClients }) {
   const [formData, setFormData] = useState({ ...client });

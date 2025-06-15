@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AddProjectModal.css';
-import { BASE_URL } from '../../constants';
+import { BASE_URL } from '../../utils/constants';
 
 export default function AddProjectModal({ onClose, onSubmit, clients }) {
   const [form, setForm] = useState({

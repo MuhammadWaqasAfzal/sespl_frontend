@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AddExpenseModal.css';
-import { BASE_URL } from '../../../../constants';
+import { BASE_URL } from '../../../../utils/constants';
 
 export default function AddExpenseModal({ projectId, onClose, onSave }) {
   const [expenses, setExpenses] = useState([]);

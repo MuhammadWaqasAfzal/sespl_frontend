@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ProjectDetail.css';
-import { BASE_URL } from '../../../constants';
+import { BASE_URL } from '../../../utils/constants';
 import AddPaymentModal from './payment/PaymentModal';
 import EditProjectModal from './EditProjectModal';
 import AddExpenseModal from './expense/AddExpenseModal';
@@ -93,7 +93,10 @@ export default function ProjectDetail() {
   const getProjectDocuments = (projId) => {
     fetch(`${BASE_URL}/projectDocuments/getAll/${projId}`)
       .then(res => res.json())
-      .then(data => setDocuments(data.data || []));
+      .then(data => { setDocuments(data.data || []); 
+                  console.log(data.data);}
+                );
+
   };
 
   const updateStats = (expenseList, paymentList, typeList, projectData) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { BASE_URL } from '../../../constants';
+import { BASE_URL } from '../../../utils/constants';
 import './EditProjectModal.css';
 
 export default function EditProjectModal({ project, onClose, onUpdate }) {

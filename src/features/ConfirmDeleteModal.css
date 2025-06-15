@@ -12,6 +12,10 @@
     align-items: center;
     z-index: 1000;
   }
+
+  h3{
+    color: #d9534f;
+  }
   
   .modal-content {
     background-color: white;

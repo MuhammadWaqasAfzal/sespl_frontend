@@ -1,7 +1,7 @@
 // src/components/Employee/EditEmployeeModal.js
 import React, { useState } from 'react';
 import './editEmployee.css'; // Reuse the same styling
-import { BASE_URL } from '../../../constants';
+import { BASE_URL } from '../../../utils/constants';
 
 const EditEmployeeModal = ({ onClose, onEmployeeUpdated, designations, permissions, employee }) => {
   const [formData, setFormData] = useState({

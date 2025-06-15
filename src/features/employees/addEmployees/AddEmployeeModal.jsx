@@ -1,7 +1,7 @@
 // src/components/Employee/AddEmployeeModal.js
 import React, { useState } from 'react';
 import './AddEmployeeModal.css';
-import { BASE_URL } from '../../../constants';
+import { BASE_URL } from '../../../utils/constants';
 
 const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions }) => {
   const [formData, setFormData] = useState({

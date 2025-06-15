@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Helper  from '../../../../utils/hepler'
 export default function GeneralInfo({ project, onEdit }) {
   const [visible, setVisible] = useState(false);
 
@@ -13,9 +13,11 @@ export default function GeneralInfo({ project, onEdit }) {
       </div>
       {visible && (
         <div className="section-box">
-          <div className="header-buttons">
-            <button className="-button" onClick={onEdit}>✏️ Edit Project</button>
-          </div>
+          {Helper.checkPermission('editProjectDetails') && (
+            <div className="header-buttons">
+              <button className="-button" onClick={onEdit}>✏️ Edit Project</button>
+            </div>
+          )}
           <h2>{project.name}</h2>
           <div className="project-info-grid">
             <div><strong>ID</strong> <span>{project.id}</span></div>

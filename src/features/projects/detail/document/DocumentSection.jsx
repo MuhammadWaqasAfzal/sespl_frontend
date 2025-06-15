@@ -1,10 +1,26 @@
 import React, { useState, useRef } from 'react';
 import { FaDownload, FaTrashAlt } from 'react-icons/fa';
-import { BASE_URL } from '../../../../constants';
+import { BASE_URL } from '../../../../utils/constants';
+import Helper from '../../../../utils/hepler';
 
-export default function DocumentsSection({ documents, selectedFiles, setSelectedFiles, downloadingDocId, setDownloadingDocId, projectId, onRefresh }) {
+// export default function DocumentsSection({ documents, selectedFiles, setSelectedFiles, downloadingDocId, setDownloadingDocId, projectId, onRefresh }) {
+//   const [visible, setVisible] = useState(false);
+//   const fileInputRef = useRef(null);
+
+
+export default function DocumentsSection({
+  documents = [],            // parent sends this
+  projectId,                 // parent sends this
+  onRefresh = () => {},      // parent callback
+}) {
+  /* move these into local state */
+  const [selectedFiles,    setSelectedFiles]    = useState([]);
+  const [downloadingDocId, setDownloadingDocId] = useState(null);
+
   const [visible, setVisible] = useState(false);
   const fileInputRef = useRef(null);
+
+
 
   const handleUpload = () => {
     if (!selectedFiles.length) return alert("Please select at least one file.");
@@ -74,19 +90,22 @@ export default function DocumentsSection({ documents, selectedFiles, setSelected
       {visible && (
         <div className="section-box">
           <h2>Project Documents</h2>
-          <div className="header-buttons">
-            <button onClick={() => fileInputRef.current.click()}>Upload New Document</button>
-            <input
-              type="file"
-              multiple
-              ref={fileInputRef}
-              style={{ display: 'none' }}
-              onChange={(e) => {
-                const files = Array.from(e.target.files);
-                setSelectedFiles(prev => [...prev, ...files]);
-              }}
-            />
-          </div>
+
+          {Helper.checkPermission('editDocuments') && (
+            <div className="header-buttons">
+              <button onClick={() => fileInputRef.current.click()}>Upload New Document</button>
+              <input
+                type="file"
+                multiple
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  const files = Array.from(e.target.files);
+                  setSelectedFiles(prev => [...prev, ...files]);
+                }}
+              />
+            </div>
+          )}
 
           {selectedFiles.length > 0 && (
             <div className="selected-files horizontal-scroll">
@@ -108,7 +127,12 @@ export default function DocumentsSection({ documents, selectedFiles, setSelected
           ) : (
             <table>
               <thead>
-                <tr><th>#</th><th>Name</th><th>Type</th><th>Actions</th></tr>
+                <tr><th>#</th><th>Name</th><th>Type</th>
+                
+                {Helper.checkPermission('editDocuments') && (
+                  <th>Actions</th>
+                )}
+                </tr>
               </thead>
               <tbody>
                 {documents.map((doc, index) => (
@@ -116,18 +140,21 @@ export default function DocumentsSection({ documents, selectedFiles, setSelected
                     <td>{index + 1}</td>
                     <td>{doc.file_name}</td>
                     <td>{doc.file_type}</td>
-                    <td>
-                      <button className="small-btn delete" onClick={() => handleDelete(doc.id)}>
-                        <FaTrashAlt />
-                      </button>
-                      <button
-                        className="small-btn download"
-                        onClick={() => handleDownload(doc.id, doc.file_name)}
-                        disabled={downloadingDocId === doc.id}
-                      >
-                        {downloadingDocId === doc.id ? "⬇️ Downloading..." : <FaDownload />}
-                      </button>
-                    </td>
+
+                    {Helper.checkPermission('editDocuments') && (
+                      <td>
+                        <button className="small-btn delete" onClick={() => handleDelete(doc.id)}>
+                          <FaTrashAlt />
+                        </button>
+                        <button
+                          className="small-btn download"
+                          onClick={() => handleDownload(doc.id, doc.file_name)}
+                          disabled={downloadingDocId === doc.id}
+                        >
+                          {downloadingDocId === doc.id ? "⬇️ Downloading..." : <FaDownload />}
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

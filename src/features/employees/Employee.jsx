@@ -1,9 +1,11 @@
 // Employee.jsx
 import React, { useEffect, useState } from 'react';
 import './Employee.css';
-import { BASE_URL } from '../../constants';
+import { BASE_URL } from '../../utils/constants';
 import AddEmployeeModal from './addEmployees/AddEmployeeModal';
 import EditEmployeeModal from './editEmployees/editEmployee';
+import Helper from '../../utils/hepler';    
+import'../../index.css'
 
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
@@ -87,9 +89,13 @@ const Employee = () => {
     <div className="employee-container">
       <div className="employee-header">
         <h2>Employees</h2>
-        <button className="add-btn" onClick={() => setShowAddModal(true)}>
+        {Helper.checkPermission('editEmployees') && (
+        <button className="add-btn" 
+                onClick={() => setShowAddModal(true)}
+                >
           + Add New Employee
         </button>
+        )}
       </div>
 
       <input
@@ -112,7 +118,7 @@ const Employee = () => {
             <th>Address</th>
             <th>City</th>
             <th>Country</th>
-            <th>Actions</th>
+            {Helper.checkPermission('editEmployees') && ( <th>Actions</th>)}
           </tr>
         </thead>
         
@@ -128,6 +134,7 @@ const Employee = () => {
               <td>{emp.address}</td>
               <td>{emp.city}</td>
               <td>{emp.country}</td>
+               {Helper.checkPermission('editEmployees') && (
               <td>
                
                  <button 
@@ -147,8 +154,9 @@ const Employee = () => {
                   >
                     🗑️
                   </button>
-
+                  
               </td>
+               )}
             </tr>
           ))}
             {filteredEmployees.length === 0 && (
