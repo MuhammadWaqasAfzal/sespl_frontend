@@ -41,7 +41,7 @@ export default function ExpensesSection({ expenses, expenseTypes, designations, 
                 {expenses.map((exp, index) => (
                   <tr key={exp.id}>
                     <td>{index + 1}</td>
-                    <td>£{parseFloat(exp.amount).toFixed(2)}</td>
+                    <td>Rs. {parseFloat(exp.amount).toFixed(2)}</td>
                     <td>{exp.description}</td>
                     <td>{expenseTypes.find(type => type.id === exp.expense_id)?.type || 'Unknown'}</td>
                     <td>{designations.find(type => type.id === exp.designation_id)?.title || 'N/A'}</td>

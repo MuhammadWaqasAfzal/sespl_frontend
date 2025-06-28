@@ -36,7 +36,10 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
   }, []);
 
   const selectedExpense = expenses.find(exp => exp.id.toString() === selectedExpenseId);
-  const isWagesExpense = selectedExpense?.type?.toLowerCase().includes('wages');
+  const isWagesExpense = selectedExpense?.type?.toLowerCase().includes('wages') ||
+                          selectedExpense?.type?.toLowerCase().includes('pays') ||
+                          selectedExpense?.type?.toLowerCase().includes('wage')
+                          selectedExpense?.type?.toLowerCase().includes('pay') ;
 
   const handleSubmit = async () => {
     if (!selectedExpenseId || !description || !date || !amount || (isWagesExpense && !selectedDesignation)) {
@@ -124,7 +127,7 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
           onChange={(e) => setDate(e.target.value)}
         />
 
-        <label>Amount (£):</label>
+        <label>Amount (Rs.):</label>
         <input
           type="number"
           step="0.01"

@@ -40,7 +40,7 @@ export default function PaymentsSection({ payments, onAdd, onDelete }) {
                 {payments.map((p, index) => (
                   <tr key={p.id}>
                     <td>{index + 1}</td>
-                    <td>£{p.amount}</td>
+                    <td>Rs. {p.amount}</td>
                     <td>{new Date(p.date).toLocaleDateString()}</td>
                     <td>{p.cheque_no}</td>
                     <td>{p.cheque_name}</td>

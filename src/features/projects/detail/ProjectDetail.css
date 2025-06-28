@@ -199,3 +199,80 @@ button:hover {
 .dropdown-section-header:hover {
   background-color: var(--app-color-dark);
 }
+
+
+.upload-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #05173b;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.small-btn.delete, .download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  margin: 0 2px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Delete button styles */
+.small-btn.delete {
+  background-color: #da0d21;
+  color: #fff;
+}
+
+.small-btn.delete:hover {
+  background-color: #b02a37;
+  transform: scale(1.15);
+}
+
+
+.download {
+  background-color: #05173b;
+  color: #fff;
+}
+
+.download:hover {
+  background-color: #003366;
+   color: #8f9499;
+  transform: scale(1.05);
+}
+
+/* Disabled state */
+.small-btn.delete:disabled,
+.download:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* .download{
+  background-color: #05173b;
+  margin: 0.1rem;
+  color: #8f9499;
+
+
+
+} */

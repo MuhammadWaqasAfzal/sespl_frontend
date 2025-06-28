@@ -13,7 +13,7 @@ export default function GeneralInfo({ project, onEdit }) {
       </div>
       {visible && (
         <div className="section-box">
-          {Helper.checkPermission('editProjectDetails') && (
+          {Helper.checkPermission('editProjectDetail') && (
             <div className="header-buttons">
               <button className="-button" onClick={onEdit}>✏️ Edit Project</button>
             </div>
@@ -29,8 +29,8 @@ export default function GeneralInfo({ project, onEdit }) {
             <div><strong>Unit Name</strong> <span>{project.unit_name}</span></div>
             <div><strong>Project Manager</strong> <span>{project.project_manager_name}</span></div>
             <div><strong>Manager Contact</strong> <span>{project.project_manager_contact}</span></div>
-            <div><strong>Amount (excl. tax)</strong><span> £{project.total_amount_with_out_tax}</span></div>
-            <div><strong>Amount (incl. tax)</strong><span> £{project.total_amount_with_tax}</span></div>
+            <div><strong>Amount (excl. tax)</strong><span> Rs {project.total_amount_with_out_tax}</span></div>
+            <div><strong>Amount (incl. tax)</strong><span> Rs {project.total_amount_with_tax}</span></div>
             <div><strong>PO Number</strong> <span>{project.po_number}</span></div>
             <div><strong>Completed</strong> <span>{project.completed ? 'Yes' : 'No'}</span></div>
             <div className="full-width"><strong>Description:</strong> {project.description}</div>

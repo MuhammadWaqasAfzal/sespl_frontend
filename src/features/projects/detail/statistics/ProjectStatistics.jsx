@@ -40,13 +40,13 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
 
         {totalSpent > totalWithoutTax && (
           <div style={{ color: 'red', fontWeight: 'bold', margin: '10px 0' }}>
-            ⚠️ Warning: Spent amount (£{totalSpent.toLocaleString()}) exceeds the budget (£{totalWithoutTax.toLocaleString()})
+            ⚠️ Warning: Spent amount (Rs.{totalSpent.toLocaleString()}) exceeds the budget (Rs. {totalWithoutTax.toLocaleString()})
           </div>
         )}
 
         <div style={{ padding: '10px 0', width: '100%' }}>
           <div style={{ marginBottom: '10px' }}>
-            <strong>Total Budget: £{totalWithoutTax.toLocaleString()}</strong>
+            <strong>Total Budget: Rs. {totalWithoutTax.toLocaleString()}</strong>
           </div>
           <div className="progress-bar">
             <div
@@ -64,8 +64,8 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
           </div>
 
           <div className="progress-labels">
-            <span className="spent-label">£{totalSpent.toLocaleString()} spent</span>
-            <span className="left-label">£{remaining.toLocaleString()} left</span>
+            <span className="spent-label">Rs. {totalSpent.toLocaleString()} spent</span>
+            <span className="left-label">Rs. {remaining.toLocaleString()} left</span>
           </div>
 
         </div>
@@ -85,7 +85,7 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
                 dominantBaseline="middle"
                 className="center-label"
               >
-                £{totalWithoutTax.toLocaleString()}
+               Rs {totalWithoutTax.toLocaleString()}
               </text>
               <Pie
                 data={pieData}
@@ -128,7 +128,7 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
                 labelLine={false}
                 isAnimationActive={true}
                 animationDuration={1000}
-                label={({ name, value }) => `${name}: £${value.toLocaleString()}`}
+                label={({ name, value }) => `${name}: Rs ${value.toLocaleString()}`}
               >
                 {receivedData.map((_, index) => (
                   <Cell key={`cell-receive-${index}`} fill={COLORS[index % COLORS.length]} />

@@ -2,25 +2,19 @@ import React, { useState, useRef } from 'react';
 import { FaDownload, FaTrashAlt } from 'react-icons/fa';
 import { BASE_URL } from '../../../../utils/constants';
 import Helper from '../../../../utils/hepler';
-
-// export default function DocumentsSection({ documents, selectedFiles, setSelectedFiles, downloadingDocId, setDownloadingDocId, projectId, onRefresh }) {
-//   const [visible, setVisible] = useState(false);
-//   const fileInputRef = useRef(null);
+import '../ProjectDetail.css'
 
 
 export default function DocumentsSection({
-  documents = [],            // parent sends this
-  projectId,                 // parent sends this
-  onRefresh = () => {},      // parent callback
+  documents = [],
+  projectId,
+  onRefresh = () => {},
 }) {
-  /* move these into local state */
-  const [selectedFiles,    setSelectedFiles]    = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [downloadingDocId, setDownloadingDocId] = useState(null);
-
   const [visible, setVisible] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
-
-
 
   const handleUpload = () => {
     if (!selectedFiles.length) return alert("Please select at least one file.");
@@ -28,6 +22,8 @@ export default function DocumentsSection({
     const formData = new FormData();
     formData.append("projectId", projectId);
     selectedFiles.forEach(file => formData.append("files", file));
+
+    setIsUploading(true);
 
     fetch(`${BASE_URL}/projectDocuments/upload`, {
       method: "POST",
@@ -43,19 +39,24 @@ export default function DocumentsSection({
           alert(`Upload failed: ${data.message || "Unknown error"}`);
         }
       })
-      .catch(() => alert("An error occurred during upload."));
+      .catch(() => {
+        alert("An error occurred during upload.");
+      })
+      .finally(() => {
+        setIsUploading(false);
+      });
   };
 
   const handleDelete = id => {
     if (!window.confirm("Are you sure you want to delete this document?")) return;
     fetch(`${BASE_URL}/projectDocuments/delete/${id}`, { method: 'DELETE' })
       .then(res => res.json().then(data => ({ status: res.status, data })))
-      .then(({ status }) => {
+      .then(({ status, data }) => {
         if (status === 200) {
           alert("Document deleted successfully.");
           onRefresh();
         } else {
-          alert("Failed to delete document.");
+          alert(data.message || "Failed to delete document.");
         }
       });
   };
@@ -93,7 +94,12 @@ export default function DocumentsSection({
 
           {Helper.checkPermission('editDocuments') && (
             <div className="header-buttons">
-              <button onClick={() => fileInputRef.current.click()}>Upload New Document</button>
+              <button
+                onClick={() => fileInputRef.current.click()}
+                disabled={isUploading}
+              >
+                Upload New Document
+              </button>
               <input
                 type="file"
                 multiple
@@ -103,6 +109,7 @@ export default function DocumentsSection({
                   const files = Array.from(e.target.files);
                   setSelectedFiles(prev => [...prev, ...files]);
                 }}
+                disabled={isUploading}
               />
             </div>
           )}
@@ -114,11 +121,25 @@ export default function DocumentsSection({
                 {selectedFiles.map((file, index) => (
                   <div key={index} className="file-item">
                     <span>{file.name}</span>
-                    <button className="remove-btn" onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))}>❌</button>
+                    <button
+                      className="remove-btn"
+                      onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))}
+                      disabled={isUploading}
+                    >
+                      ❌
+                    </button>
                   </div>
                 ))}
               </div>
-              <button onClick={handleUpload}>Upload Selected Files</button>
+              <button onClick={handleUpload} disabled={isUploading}>
+                {isUploading ? "Uploading..." : "Upload Selected Files"}
+              </button>
+              {isUploading && (
+                <div className="upload-spinner">
+                  <div className="spinner"></div>
+                  <p>Uploading files, please wait...</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -127,11 +148,11 @@ export default function DocumentsSection({
           ) : (
             <table>
               <thead>
-                <tr><th>#</th><th>Name</th><th>Type</th>
-                
-                {Helper.checkPermission('editDocuments') && (
-                  <th>Actions</th>
-                )}
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  {Helper.checkPermission('editDocuments') && <th>Actions</th>}
                 </tr>
               </thead>
               <tbody>
@@ -140,16 +161,19 @@ export default function DocumentsSection({
                     <td>{index + 1}</td>
                     <td>{doc.file_name}</td>
                     <td>{doc.file_type}</td>
-
                     {Helper.checkPermission('editDocuments') && (
                       <td>
-                        <button className="small-btn delete" onClick={() => handleDelete(doc.id)}>
+                        <button
+                          className="small-btn delete"
+                          onClick={() => handleDelete(doc.id)}
+                          disabled={isUploading}
+                        >
                           <FaTrashAlt />
                         </button>
                         <button
-                          className="small-btn download"
+                          className="download"
                           onClick={() => handleDownload(doc.id, doc.file_name)}
-                          disabled={downloadingDocId === doc.id}
+                          disabled={downloadingDocId === doc.id || isUploading}
                         >
                           {downloadingDocId === doc.id ? "⬇️ Downloading..." : <FaDownload />}
                         </button>

@@ -5,10 +5,8 @@ import Employees  from '../employees/Employee.jsx';
 import Settings   from '../settings/Settings.jsx';
 import Dashboard  from '../dashboard/dashboard.jsx';
 import Inventory  from '../inventory/Inventory.jsx';
-import Helper from '../../utils/hepler.js';   // ← NEW
+import Helper from '../../utils/hepler.js';
 import './Home.css';
-
-/* ─────────────── menu & component maps ─────────────── */
 
 const MENU_ITEMS = [
   { key: 'dashboard', label: 'Dashboard' },
@@ -17,6 +15,7 @@ const MENU_ITEMS = [
   { key: 'employees', label: 'Employees' },
   { key: 'inventory', label: 'Inventory' },
   { key: 'settings',  label: 'Settings'  },
+  { key: 'logout',    label: 'Logout'    },  // 🚀 Added logout
 ];
 
 const COMPONENT_MAP = {
@@ -28,7 +27,6 @@ const COMPONENT_MAP = {
   settings:  <Settings  />,
 };
 
-/* key → permission field */
 const PERM_MAP = {
   dashboard:  'login',
   projects:   'viewProjects',
@@ -39,17 +37,13 @@ const PERM_MAP = {
 };
 
 export default function Home() {
-  /* 1️⃣  build the menu the user is allowed to see */
-  const allowedMenu = useMemo(
-    () =>
-      MENU_ITEMS.filter(({ key }) => {
-        const permField = PERM_MAP[key];
-        return permField ? Helper.checkPermission(permField) : true;
-      }),
-    [],
-  );
+  const allowedMenu = useMemo(() =>
+    MENU_ITEMS.filter(({ key }) => {
+      if (key === 'logout') return true;  // Allow logout for all
+      const permField = PERM_MAP[key];
+      return permField ? Helper.checkPermission(permField) : true;
+    }), []);
 
-  /* 2️⃣  decide which tab to show first */
   const [selected, setSelected] = useState(() => {
     const saved = sessionStorage.getItem('selectedTab');
     return allowedMenu.some((m) => m.key === saved)
@@ -57,7 +51,6 @@ export default function Home() {
       : allowedMenu[0]?.key ?? '';
   });
 
-  /* 3️⃣  keep selected tab valid if permissions change (unlikely) */
   useEffect(() => {
     if (!allowedMenu.some((m) => m.key === selected) && allowedMenu.length) {
       setSelected(allowedMenu[0].key);
@@ -65,7 +58,15 @@ export default function Home() {
     }
   }, [allowedMenu, selected]);
 
-  /* 4️⃣  render */
+  const handleLogout = () => {
+   const confirm = window.confirm("Are you sure you want to logout?");
+          if (confirm) {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/';
+          }
+  };
+
   return (
     <div className="home-container">
       <nav className="side-menu" role="tablist">
@@ -76,12 +77,25 @@ export default function Home() {
               role="tab"
               tabIndex={0}
               aria-selected={selected === key}
-              className={selected === key ? 'selected' : ''}
+              className={`${selected === key ? 'selected' : ''} ${key === 'logout' ? 'logout' : ''}`}
               onClick={() => {
-                setSelected(key);
-                sessionStorage.setItem('selectedTab', key);
+                if (key === 'logout') {
+                  handleLogout();
+                } else {
+                  setSelected(key);
+                  sessionStorage.setItem('selectedTab', key);
+                }
               }}
-              onKeyDown={(e) => e.key === 'Enter' && setSelected(key)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  if (key === 'logout') {
+                    handleLogout();
+                  } else {
+                    setSelected(key);
+                    sessionStorage.setItem('selectedTab', key);
+                  }
+                }
+              }}
             >
               {label}
             </li>
@@ -95,4 +109,3 @@ export default function Home() {
     </div>
   );
 }
-

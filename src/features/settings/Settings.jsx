@@ -74,14 +74,18 @@ const handleDeleteExpense = (id) => {
       method: 'DELETE',
     })
       .then((res) => res.json().then(data => ({ status: res.status, data })))
-      .then(({ status }) => {
+      .then(({ status,data }) => {
         if (status === 200) {
           const updated = expenses.filter(e => e.id !== id);
           setExpenses(updated);
           localStorage.setItem('expenses', JSON.stringify(updated));
           alert("Expense type deleted successfully.");
-        } else {
-          alert("Failed to delete expense type.");
+        } 
+        else if (status === 409) {
+           alert(data.message);
+        }
+        else{
+            alert("Failed to delete expense type.");
         }
       })
       .catch((err) => {
@@ -98,15 +102,24 @@ const handleDeleteExpense = (id) => {
   if (cached) {
     setDesignations(JSON.parse(cached));
   }
+  fetchDesignations();
+  }, []);
+
+
+  const fetchDesignations = () => {
   fetch(`${BASE_URL}/designation/getAll`)
     .then(res => res.json())
     .then(data => {
-      setDesignations(data.data);
-      localStorage.setItem('designations', JSON.stringify(data.data));
+      if (data.statusCode === 200) {
+        setDesignations(data.data);
+        localStorage.setItem('designations', JSON.stringify(data.data));
+      } else {
+        console.error('Failed to fetch designations:', data.message);
+      }
     })
     .catch(err => console.error('Failed to fetch designations:', err));
-    
-  }, []);
+};
+
 
 const handleAddDesignation = () => {
   if (!newDesignation.trim()) {
@@ -151,7 +164,9 @@ const handleAddDesignation = () => {
           .then((res) => res.json().then(data => ({ status: res.status, data })))
           .then(({ status, data }) => {
             if (status === 200) {
-              setDesignations(designations.filter(d => d.id !== id));
+              const updated = designations.filter(d => d.id !== id);
+              setDesignations(updated);
+              localStorage.setItem('designations', JSON.stringify(updated)); // ✅ update localStorage
               alert("Designation deleted successfully.");
             } else {
               alert(data.message);
@@ -186,17 +201,24 @@ const handleAddDesignation = () => {
     setIsModalOpen(false);
   };
 
-  const handleSavePermission = () => {
-    fetch(`${BASE_URL}/permission/create`)
-      .then((res) => res.json())
-      .then((data) => setPermissions(data.data))
-      .catch((err) => console.error('Failed to create permission:', err));
-  };
 
-  const refreshPermissions = () =>
+
+  const refreshPermissions = () => {
   fetch(`${BASE_URL}/permission/getAll`)
-    .then((r) => r.json())
-    .then((d) => setPermissions(d.data));
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.statusCode === 200) {
+        setPermissions(data.data);
+        localStorage.setItem('permissions', JSON.stringify(data.data));
+      } else {
+        alert(data.message || 'Failed to refresh permissions');
+      }
+    })
+    .catch((err) => {
+      console.error('Failed to refresh permissions:', err);
+      alert('Error occurred while refreshing permissions.');
+    });
+};
 
   const handleDeletePermissionClick = (permission) => {
     setPermissionToDelete(permission);
@@ -218,6 +240,7 @@ const handleAddDesignation = () => {
             setPermissions(permissions.filter((perm) => perm.name !== permissionToDelete.name));
             setIsDeleteModalOpen(false);
             alert(`Deleted successfully`);
+            refreshPermissions();
           } else if (status === 400 && data.permissions) {
             alert("Bad request");
           } else {
@@ -538,24 +561,12 @@ const handleAddDesignation = () => {
       )}
 
 
-      <div className="logout-section">
-
-        <button className="logout-btn" onClick={() => {
-          const confirm = window.confirm("Are you sure you want to logout?");
-          if (confirm) {
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.href = '/';
-          }
-        }} >
-          🚪 Logout
-        </button>
-      </div>
+     
 
       <AddPermissionModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        onSave={handleSavePermission}
+        onSave={refreshPermissions}
       />
 
       <EditPermissionModal

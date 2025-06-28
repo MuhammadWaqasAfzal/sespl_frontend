@@ -53,7 +53,7 @@ export default function PaymentModal({ onClose, onSave, projectId }) {
       <div className="modal">
         <h2>Add New Payment</h2>
 
-        <label>Amount (£):</label>
+        <label>Amount (Rs.):</label>
         <input type="number" name="amount" placeholder="e.g., 500.00" value={formData.amount} onChange={handleChange} />
 
         <label>Cheque No:</label>
