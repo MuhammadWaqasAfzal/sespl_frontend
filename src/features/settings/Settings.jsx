@@ -402,7 +402,7 @@ const handleAddDesignation = () => {
         </div>
 
 
-        {profileVisible && user && (
+      {profileVisible && user && (
   <div className="profile-content styled-profile">
     <div className="profile-row">
       <span className="label">Full Name:</span>
@@ -416,14 +416,14 @@ const handleAddDesignation = () => {
       <span className="label">Email:</span>
       <span className="value">{user.email}</span>
     </div>
-    {user.designation.toLowerCase() !== 'company' && (
+    {(user.designation || '').toLowerCase() !== 'company' && (
       <div className="profile-row">
         <span className="label">Contact Number:</span>
         <span className="value">{user.contact}</span>
       </div>
     )}
   </div>
-        )}
+)}
       </div>
 
 {/* designations */}
