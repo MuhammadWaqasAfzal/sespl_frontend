@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Inventory.css';
 import { BASE_URL } from '../../utils/constants';
+import Helper from '../../utils/hepler';
 
 const Inventory = () => {
   const [inventory, setInventory] = useState([]);
@@ -9,12 +10,18 @@ const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editItem, setEditItem] = useState(null);
 
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
+
   useEffect(() => {
     getAllInventory();
   }, []);
 
   const getAllInventory = () => {
-    fetch(`${BASE_URL}/inventory/getAll`)
+    fetch(`${BASE_URL}/inventory/getAll`, { headers })
       .then(res => res.json())
       .then(data => {
         if (data.statusCode === 200) {
@@ -37,7 +44,7 @@ const Inventory = () => {
 
     fetch(`${BASE_URL}/inventory/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ name, quantity: parseInt(quantity, 10) })
     })
       .then(res => res.json())
@@ -59,7 +66,10 @@ const Inventory = () => {
   const handleDelete = (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
 
-    fetch(`${BASE_URL}/inventory/delete/${id}`, { method: 'DELETE' })
+    fetch(`${BASE_URL}/inventory/delete/${id}`, {
+      method: 'DELETE',
+      headers
+    })
       .then(res => res.json())
       .then(data => {
         if (data.statusCode === 200) {
@@ -82,7 +92,7 @@ const Inventory = () => {
 
     fetch(`${BASE_URL}/inventory/update/${editItem.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         name: editItem.name,
         quantity: parseInt(editItem.quantity, 10)
@@ -137,46 +147,48 @@ const Inventory = () => {
         <button onClick={handleAdd}>+ Add Inventory</button>
       </div>
 
-      <table className="inventory-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Quantity</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredInventory.map(item => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.name}</td>
-              <td>{item.quantity}</td>
-              <td>
-                <button
-                  className="icon-button edit"
-                  onClick={() => setEditItem({ ...item })}
-                  title="Edit Inventory"
-                >
-                  ✏️
-                </button>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="icon-button delete"
-                  title="Delete Inventory"
-                >
-                  🗑️
-                </button>
-              </td>
-            </tr>
-          ))}
-          {filteredInventory.length === 0 && (
+      <div className="inventory-table-container">
+        <table className="inventory-table">
+          <thead>
             <tr>
-              <td colSpan="4" className="no-data">No inventory found.</td>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Quantity</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredInventory.map(item => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.name}</td>
+                <td>{item.quantity}</td>
+                <td>
+                  <button
+                    className="icon-button edit"
+                    onClick={() => setEditItem({ ...item })}
+                    title="Edit Inventory"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="icon-button delete"
+                    title="Delete Inventory"
+                  >
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {filteredInventory.length === 0 && (
+              <tr>
+                <td colSpan="4" className="no-data">No inventory found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {editItem && (
         <div className="modal-overlay">

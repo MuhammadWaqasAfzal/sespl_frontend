@@ -27,6 +27,14 @@ class Helper {
     const perms = Helper._getPermissions();
     return !!perms[permName];
   }
+
+
+  static getCompanyId(){
+     const user = JSON.parse(localStorage.getItem('user'));
+    const company_id = user?.company_id || user?.permissions?.company_id;
+
+    return company_id
+  }
 }
 
 export default Helper;

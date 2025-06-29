@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './editEmployee.css'; // Reuse the same styling
 import { BASE_URL } from '../../../utils/constants';
+import Helper from '../../../utils/hepler';
 
 const EditEmployeeModal = ({ onClose, onEmployeeUpdated, designations, permissions, employee }) => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,13 @@ const EditEmployeeModal = ({ onClose, onEmployeeUpdated, designations, permissio
     country: employee.country,
     permission_id: employee.permission_id,
   });
+
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
+
 
   const [error, setError] = useState('');
 
@@ -43,7 +51,7 @@ const EditEmployeeModal = ({ onClose, onEmployeeUpdated, designations, permissio
 
     fetch(`${BASE_URL}/employee/update/${employee.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(formData),
     })
       .then((res) => res.json())

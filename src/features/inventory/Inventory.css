@@ -51,29 +51,42 @@
 }
 
 .inventory-inputs button:hover {
-  background-color: #0056b3;
+  background-color: #ffc400;
 }
 
+/* Scrollable table container */
+.inventory-table-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  border: 0px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+}
+
+/* Table layout */
 .inventory-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.inventory-table th,
-.inventory-table td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  font-size: 1rem;
-}
-
-.inventory-table th {
+/* Sticky headers */
+.inventory-table thead th {
+  position: sticky;
+  top: 0;
   background-color: #05173b;
   color: #fff;
+  z-index: 2;
+}
+
+/* Table cells */
+.inventory-table th,
+.inventory-table td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #eee;
 }
 
 .inventory-table tr:nth-child(even) {
@@ -84,6 +97,7 @@
   background-color: #eef3f7;
 }
 
+/* Icon buttons */
 .icon-button {
   background: none;
   border: none;
@@ -103,13 +117,14 @@
   opacity: 0.7;
 }
 
+/* No data row */
 .no-data {
   text-align: center;
   padding: 1rem;
   color: #888;
 }
 
-/* Modal styling stays the same */
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;

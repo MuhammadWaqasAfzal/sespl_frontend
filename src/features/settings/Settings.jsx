@@ -27,13 +27,19 @@ function Settings() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [permToEdit,    setPermToEdit]    = useState(null);
 
+  const company_id = Helper.getCompanyId();
+      const headers = {
+        'Content-Type': 'application/json',
+        company_id,
+      };
+
     useEffect(() => {
     const cachedExpenses = localStorage.getItem('expenses');
     if (cachedExpenses) {
       setExpenses(JSON.parse(cachedExpenses));
     }
 
-    fetch(`${BASE_URL}/expense/getAll`)
+    fetch(`${BASE_URL}/expense/getAll`,{ headers })
       .then(res => res.json())
       .then(data => {
         setExpenses(data.data);
@@ -50,9 +56,7 @@ function Settings() {
 
   fetch(`${BASE_URL}/expense/create`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: headers,
     body: JSON.stringify({ type: newExpenseType.trim() }),
   })
     .then(res => res.json())
@@ -72,6 +76,7 @@ const handleDeleteExpense = (id) => {
   if (window.confirm("Are you sure you want to delete this expense type?")) {
     fetch(`${BASE_URL}/expense/delete/${id}`, {
       method: 'DELETE',
+      headers: headers,
     })
       .then((res) => res.json().then(data => ({ status: res.status, data })))
       .then(({ status,data }) => {
@@ -107,7 +112,7 @@ const handleDeleteExpense = (id) => {
 
 
   const fetchDesignations = () => {
-  fetch(`${BASE_URL}/designation/getAll`)
+  fetch(`${BASE_URL}/designation/getAll`,{ headers })
     .then(res => res.json())
     .then(data => {
       if (data.statusCode === 200) {
@@ -129,9 +134,7 @@ const handleAddDesignation = () => {
 
   fetch(`${BASE_URL}/designation/create`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers:headers ,
     body: JSON.stringify({ title: newDesignation.trim() }),
   })
     .then((res) => res.json())
@@ -160,6 +163,7 @@ const handleAddDesignation = () => {
       if (window.confirm("Are you sure you want to delete this designation?")) {
         fetch(`${BASE_URL}/designation/delete/${id}`, {
           method: 'DELETE',
+          headers:headers,
         })
           .then((res) => res.json().then(data => ({ status: res.status, data })))
           .then(({ status, data }) => {
@@ -183,11 +187,10 @@ const handleAddDesignation = () => {
   useEffect(() => {
       const obj = JSON.parse(localStorage.getItem('user') || '');
       setUser(obj);
-       
   }, []);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/permission/getAll`)
+    fetch(`${BASE_URL}/permission/getAll`,{ headers })
       .then((res) => res.json())
       .then((data) => setPermissions(data.data))
       .catch((err) => console.error('Failed to fetch permissions:', err));
@@ -204,7 +207,7 @@ const handleAddDesignation = () => {
 
 
   const refreshPermissions = () => {
-  fetch(`${BASE_URL}/permission/getAll`)
+  fetch(`${BASE_URL}/permission/getAll`,{ headers })
     .then((res) => res.json())
     .then((data) => {
       if (data.statusCode === 200) {
@@ -230,9 +233,7 @@ const handleAddDesignation = () => {
     if (permissionToDelete) {
       fetch(`${BASE_URL}/permission/delete/${permissionToDelete.id}`, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: headers,
       })
         .then((res) => res.json().then(data => ({ status: res.status, data })))
         .then(({ status, data }) => {

@@ -10,6 +10,7 @@
   --employee-border: #ccc;
   --employee-no-data-color: #777;
 }
+
 button.disabled {
   opacity: 0.9;
   pointer-events: none;
@@ -64,25 +65,40 @@ button.disabled {
   font-size: 0.95rem;
 }
 
-/* Table styling (if needed) */
+/* Scrollable table container */
+.employee-table-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  border: 0px solid var(--employee-border);
+  border-radius: 8px;
+  background-color: var(--employee-bg);
+}
+
+/* Table layout */
 .employee-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
 }
 
 .employee-table th,
 .employee-table td {
-  padding: 10px 12px;
-  border: 1px solid var(--employee-border);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--employee-border);
   text-align: left;
+  font-size: 0.9rem;
+  line-height: 1;
 }
 
-.employee-table thead {
-  background-color: var(--employee-text);
+/* Sticky header */
+.employee-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #05173b;
   color: white;
+  z-index: 2;
 }
 
+/* Row styles */
 .employee-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
@@ -107,6 +123,7 @@ button.disabled {
   background-color: var(--employee-delete-hover-bg);
 }
 
+/* No data message */
 .no-data {
   text-align: center;
   font-weight: bold;

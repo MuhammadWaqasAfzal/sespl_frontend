@@ -4,101 +4,93 @@ import { BASE_URL } from '../../utils/constants';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Helper from '../../utils/hepler';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    // Optionally add real-time validation logic here (without toasts)
+    setEmail(e.target.value.trim());
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validations
-    if (!email) {
-      toast.error('Email is required');
-      return;
-    }
-    if (!validateEmail(email)) {
-      toast.error('Invalid email format');
-      return;
-    }
-    if (!password) {
-      toast.error('Password is required');
-      return;
-    }
+    if (!email) return toast.error('Email is required');
+    if (!validateEmail(email)) return toast.error('Invalid email format');
+    if (!password) return toast.error('Password is required');
 
     setLoading(true);
+
     try {
+      // Login API
       const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        const errData = await response.json();
-        toast.error(errData.message || 'Login failed');
-        return;
-      }
-
       const user = await response.json();
+
+      if (!response.ok) {
+        return toast.error(user.message || 'Login failed');
+      }
+
+      // Store user
       localStorage.setItem('user', JSON.stringify(user.data));
-      localStorage.setItem('isLoggedIn', 'true'); 
+      localStorage.setItem('isLoggedIn', 'true');
 
+      const company_id = Helper.getCompanyId();
+      const headers = {
+        'Content-Type': 'application/json',
+        company_id,
+      };
 
-      // Fetch designations
-      const desigResponse = await fetch(`${BASE_URL}/designation/getAll`);
-      if (!desigResponse.ok) {
+      // Designations
+      const desigRes = await fetch(`${BASE_URL}/designation/getAll`, { headers });
+      if (desigRes.ok) {
+        const data = await desigRes.json();
+        localStorage.setItem('designations', JSON.stringify(data.data));
+      } else {
         toast.error('Failed to fetch designations');
-      } else {
-        const designations = await desigResponse.json();
-        localStorage.setItem('designations', JSON.stringify(designations.data));
       }
 
-      // Fetch permissions
-      const permResponse = await fetch(`${BASE_URL}/permission/getAll`);
-      if (!permResponse.ok) {
+      // Permissions
+      const permRes = await fetch(`${BASE_URL}/permission/getAll`, { headers });
+      if (permRes.ok) {
+        const data = await permRes.json();
+        localStorage.setItem('permissions', JSON.stringify(data.data));
+      } else {
         toast.error('Failed to fetch permissions');
-      } else {
-        const permissions = await permResponse.json();
-        localStorage.setItem('permissions', JSON.stringify(permissions.data));
       }
 
-      // Fetch clients
-      const clientResponse = await fetch(`${BASE_URL}/client/getAll`);
-      if (!clientResponse.ok) {
+      // Clients
+      const clientRes = await fetch(`${BASE_URL}/client/getAll`, { headers });
+      if (clientRes.ok) {
+        const data = await clientRes.json();
+        localStorage.setItem('clients', JSON.stringify(data.data));
+      } else {
         toast.error('Failed to fetch clients');
-      } else {
-        const clients = await clientResponse.json();
-        localStorage.setItem('clients', JSON.stringify(clients.data));
       }
 
-      // Fetch Expense Types (non-blocking)
-      fetch(`${BASE_URL}/expense/getAll`)
-        .then(res => res.json())
-        .then(data => {
+      // Expenses (non-blocking)
+      fetch(`${BASE_URL}/expense/getAll`, { headers })
+        .then((res) => res.json())
+        .then((data) => {
           localStorage.setItem('expenses', JSON.stringify(data.data));
         })
-        .catch(err => console.error('Failed to fetch expenses:', err));
+        .catch((err) => console.error('Failed to fetch expenses:', err));
 
-      sessionStorage.setItem('selectedTab', "dashboard");
-
+      sessionStorage.setItem('selectedTab', 'dashboard');
       navigate('/home');
     } catch (error) {
-      toast.error(error.message || 'Something went wrong');
+      toast.error(error?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

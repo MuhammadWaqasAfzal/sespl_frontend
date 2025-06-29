@@ -16,6 +16,12 @@ export default function Client() {
   const [clientToEdit, setClientToEdit] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
+
   useEffect(() => {
     fetchClients();
   }, []);
@@ -29,7 +35,7 @@ export default function Client() {
   function fetchClients() {
     setLoading(true);
     setError(null);
-    fetch(`${BASE_URL}/client/getAll`)
+    fetch(`${BASE_URL}/client/getAll`,{headers})
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch clients');
         return res.json();
@@ -54,6 +60,7 @@ export default function Client() {
     try {
       const res = await fetch(`${BASE_URL}/client/delete/${id}`, {
         method: 'DELETE',
+        headers,
       });
       if (!res.ok) {
         const errorData = await res.json();
@@ -91,65 +98,67 @@ export default function Client() {
           className="search-bar"
         />
 
-      <table className="clients-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Contact</th>
-            <th>Address</th>
-            <th>Comments</th>
-            <th>Created At</th>
 
-            {Helper.checkPermission('editClients') && (
-              <th>Action</th>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredClients.length === 0 ? (
+      <div className="clients-table-container">
+        <table className="clients-table">
+          <thead>
             <tr>
-              <td colSpan="8" className="no-data">No clients found.</td>
-            </tr>
-          ) : (
-            filteredClients.map((client) => (
-              <tr key={client.id}>
-                <td>{client.id}</td>
-                <td>{client.name}</td>
-                <td>{client.email}</td>
-                <td>{client.contact}</td>
-                <td>{client.address}</td>
-                <td>{client.comments}</td>
-                <td>{formatDate(client.created_at)}</td>
-                
-                {Helper.checkPermission('editClients') && (
-                  <td>
-                    <button 
-                    className="icon-button edit"
-                      onClick={() => setClientToEdit(client)}
-                    
-                      aria-label={`Edit client ${client.name}`}
-                      title="Edit client"
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      onClick={() => setClientToDelete(client)}
-                      className="icon-button delete"
-                      aria-label={`Delete client ${client.name}`}
-                      title="Delete client"
-                    >
-                      🗑️
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Contact</th>
+              <th>Address</th>
+              <th>Comments</th>
+              <th>Created At</th>
 
+              {Helper.checkPermission('editClients') && (
+                <th>Action</th>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredClients.length === 0 ? (
+              <tr>
+                <td colSpan="8" className="no-data">No clients found.</td>
+              </tr>
+            ) : (
+              filteredClients.map((client) => (
+                <tr key={client.id}>
+                  <td>{client.id}</td>
+                  <td>{client.name}</td>
+                  <td>{client.email}</td>
+                  <td>{client.contact}</td>
+                  <td>{client.address}</td>
+                  <td>{client.comments}</td>
+                  <td>{formatDate(client.created_at)}</td>
+                  
+                  {Helper.checkPermission('editClients') && (
+                    <td>
+                      <button 
+                      className="icon-button edit"
+                        onClick={() => setClientToEdit(client)}
+                      
+                        aria-label={`Edit client ${client.name}`}
+                        title="Edit client"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => setClientToDelete(client)}
+                        className="icon-button delete"
+                        aria-label={`Delete client ${client.name}`}
+                        title="Delete client"
+                      >
+                        🗑️
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
       {clientToDelete && (
         <div className="modal-overlay">
           <div className="modal confirm-modal">
@@ -178,7 +187,7 @@ export default function Client() {
             try {
               const res = await fetch(`${BASE_URL}/client/create`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify(newClient),
               });
               const data = await res.json();

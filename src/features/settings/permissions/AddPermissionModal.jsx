@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { BASE_URL } from '../../../utils/constants';        // adjust the path
 import './AddPermissionModal.css';
+import Helper from '../../../utils/hepler'
 
 const DEFAULT_PERM = {
   name: '',
@@ -55,7 +56,7 @@ export default function AddPermissionModal({ isOpen, onClose, onSave }) {
     try {
       const res  = await fetch(`${BASE_URL}/permission/create`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'company_id': Helper.getCompanyId() },
         body: JSON.stringify(perm),
       });
       const data = await res.json();

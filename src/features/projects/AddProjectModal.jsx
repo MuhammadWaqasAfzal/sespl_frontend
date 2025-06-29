@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './AddProjectModal.css';
 import { BASE_URL } from '../../utils/constants';
+import Helper from '../../utils/hepler';
 
 export default function AddProjectModal({ onClose, onSubmit, clients }) {
   const [form, setForm] = useState({
@@ -17,6 +18,12 @@ export default function AddProjectModal({ onClose, onSubmit, clients }) {
     po_number: '',
     description: '',
   });
+
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -60,7 +67,7 @@ export default function AddProjectModal({ onClose, onSubmit, clients }) {
     try {
       const response = await fetch(`${BASE_URL}/project/create`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(payload),
       });
 

@@ -16,6 +16,12 @@ const Employee = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
     
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
+
   useEffect(() => {
    getAllEmployees();
    getDesignations();
@@ -47,7 +53,7 @@ const Employee = () => {
   }
 
   function getAllEmployees(){
- fetch(`${BASE_URL}/employee/getAll`)
+ fetch(`${BASE_URL}/employee/getAll`,{headers})
       .then((res) => res.json())
       .then((data) => {
       
@@ -62,7 +68,7 @@ const Employee = () => {
     if (!window.confirm('Are you sure you want to delete this employee?')) return;
 
     fetch(`${BASE_URL}/employee/delete/${id}`, {
-      method: 'DELETE',
+      method: 'DELETE',headers
     })
       .then((res) => res.json())
       .then((data) => {
@@ -106,66 +112,69 @@ const Employee = () => {
         className="search-bar"
       />
 
-      <table className="employee-table">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>CNIC</th>
-            <th>Designation ID</th>
-            <th>Contact</th>
-            <th>Address</th>
-            <th>City</th>
-            <th>Country</th>
-            {Helper.checkPermission('editEmployees') && ( <th>Actions</th>)}
-          </tr>
-        </thead>
-        
-        <tbody>
-          {filteredEmployees.map((emp) => (
-            <tr key={emp.id}>
-                <td>{emp.id}</td>
-              <td>{emp.name}</td>
-              <td>{emp.email}</td>
-              <td>{emp.cnic}</td>
-               <td>{getDesignationTitle(emp.designation_id)}</td>
-              <td>{emp.contact}</td>
-              <td>{emp.address}</td>
-              <td>{emp.city}</td>
-              <td>{emp.country}</td>
-               {Helper.checkPermission('editEmployees') && (
-              <td>
-               
-                 <button 
-                   className="icon-button edit"
-                   
-                     onClick={() => handleEdit(emp)}
-                    aria-label={`Edit client ${emp.name}`}
-                    title="Edit client"
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    onClick={() => handleDelete(emp.id)}
-                    className="icon-button delete"
-                    aria-label={`Delete client ${emp.name}`}
-                    title="Delete client"
-                  >
-                    🗑️
-                  </button>
-                  
-              </td>
-               )}
-            </tr>
-          ))}
-            {filteredEmployees.length === 0 && (
+      <div className="employee-table-container">
+        <table className="employee-table">
+          <thead>
             <tr>
-              <td colSpan="10" className="no-data">No employees found.</td>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>CNIC</th>
+              <th>Designation ID</th>
+              <th>Contact</th>
+              <th>Address</th>
+              <th>City</th>
+              <th>Country</th>
+              {Helper.checkPermission('editEmployees') && ( <th>Actions</th>)}
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          
+          <tbody>
+            {filteredEmployees.map((emp) => (
+              <tr key={emp.id}>
+                  <td>{emp.id}</td>
+                <td>{emp.name}</td>
+                <td>{emp.email}</td>
+                <td>{emp.cnic}</td>
+                <td>{getDesignationTitle(emp.designation_id)}</td>
+                <td>{emp.contact}</td>
+                <td>{emp.address}</td>
+                <td>{emp.city}</td>
+                <td>{emp.country}</td>
+                {Helper.checkPermission('editEmployees') && (
+                <td>
+                
+                  <button 
+                    className="icon-button edit"
+                    
+                      onClick={() => handleEdit(emp)}
+                      aria-label={`Edit client ${emp.name}`}
+                      title="Edit client"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={() => handleDelete(emp.id)}
+                      className="icon-button delete"
+                      aria-label={`Delete client ${emp.name}`}
+                      title="Delete client"
+                    >
+                      🗑️
+                    </button>
+                    
+                </td>
+                )}
+              </tr>
+            ))}
+              {filteredEmployees.length === 0 && (
+              <tr>
+                <td colSpan="10" className="no-data">No employees found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
       {showAddModal && (
   <AddEmployeeModal
     onClose={() => setShowAddModal(false)}

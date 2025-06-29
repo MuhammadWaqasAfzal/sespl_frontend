@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AddExpenseModal.css';
 import { BASE_URL } from '../../../../utils/constants';
+import Helper from '../../../../utils/hepler';
 
 export default function AddExpenseModal({ projectId, onClose, onSave }) {
   const [expenses, setExpenses] = useState([]);
@@ -11,6 +12,13 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
   const [date, setDate] = useState('');
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');
+
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
+
 
   useEffect(() => {
     const localExpenses = localStorage.getItem('expenses');
@@ -59,7 +67,7 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
     try {
       const res = await fetch(`${BASE_URL}/projectExpense/create`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(payload),
       });
 

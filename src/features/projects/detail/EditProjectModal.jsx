@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { BASE_URL } from '../../../utils/constants';
 import './EditProjectModal.css';
+import Helper from '../../../utils/hepler';
 
 export default function EditProjectModal({ project, onClose, onUpdate }) {
   const [clients, setClients] = useState({});
@@ -22,6 +23,12 @@ export default function EditProjectModal({ project, onClose, onUpdate }) {
     });
     setClients(clientMap);
   }, []);
+
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
 
   const initialValues = {
     name: project.name || '',
@@ -59,9 +66,7 @@ export default function EditProjectModal({ project, onClose, onUpdate }) {
     try {
       const res = await fetch(`${BASE_URL}/project/update/${project.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(payload),
       });
 

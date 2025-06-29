@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './EditClientModal.css';
 import { BASE_URL } from '../../../utils/constants';
+import Helper from '../../../utils/hepler';
 
 export default function EditClientModal({ client, onClose, refreshClients }) {
   const [formData, setFormData] = useState({ ...client });
@@ -10,6 +11,12 @@ export default function EditClientModal({ client, onClose, refreshClients }) {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
   };
 
   const handleSubmit = async () => {
@@ -24,9 +31,7 @@ export default function EditClientModal({ client, onClose, refreshClients }) {
     try {
       const res = await fetch(`${BASE_URL}/client/update/${client.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(formData),
       });
 

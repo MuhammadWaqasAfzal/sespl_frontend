@@ -1,6 +1,8 @@
 // src/components/Clients/AddClientModal.js
 import React, { useState } from 'react';
 import './AddClientModal.css';
+import Helper from '../../../utils/hepler';
+
 
 export default function AddClientModal({ onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -13,6 +15,12 @@ export default function AddClientModal({ onClose, onSubmit }) {
   });
 
   const [error, setError] = useState('');
+
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;

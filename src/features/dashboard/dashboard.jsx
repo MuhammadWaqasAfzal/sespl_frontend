@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Dashboard.css";
 import { BASE_URL } from "../../utils/constants";
+import Helper from '../../utils/hepler';
+
 import {
   Bar,
   Line,
@@ -35,7 +37,12 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/statistics/dashboard`)
+    fetch(`${BASE_URL}/statistics/dashboard`,{
+    headers: {
+      'Content-Type': 'application/json',
+      'company_id': Helper.getCompanyId()
+    }
+  })
       .then((res) => res.json())
       .then((data) => setStats(data.data))
       .catch((err) => console.error("Failed to load stats", err));

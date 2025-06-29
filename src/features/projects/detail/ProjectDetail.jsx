@@ -10,6 +10,7 @@ import GeneralInfo from './generalInfo/GeneralInfo';
 import PaymentsSection from './payment/PaymentSection';
 import ExpensesSection from './expense/ExpenseSection';
 import DocumentsSection from './document/DocumentSection';
+import Helper from '../../../utils/hepler';
 
 export default function ProjectDetail() {
   const location = useLocation();
@@ -33,6 +34,12 @@ export default function ProjectDetail() {
     const localDesignation = localStorage.getItem('designations');
     if (localDesignation) setDesignations(JSON.parse(localDesignation));
   }, []);
+
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
 
   useEffect(() => {
     if (project?.id) {
@@ -60,7 +67,7 @@ export default function ProjectDetail() {
   };
 
   const fetchProjectDetails = async () => {
-    const res = await fetch(`${BASE_URL}/project/get/${project.id}`);
+    const res = await fetch(`${BASE_URL}/project/get/${project.id}`,{headers});
     const data = await res.json();
     return data.statusCode === 200 ? data.data : project;
   };
@@ -71,7 +78,7 @@ export default function ProjectDetail() {
       const types = JSON.parse(cached);
       return types;
     }
-    const res = await fetch(`${BASE_URL}/expense/getAll`);
+    const res = await fetch(`${BASE_URL}/expense/getAll`,{headers});
     const data = await res.json();
     const types = data.data || [];
     localStorage.setItem('expenses', JSON.stringify(types));
@@ -80,8 +87,8 @@ export default function ProjectDetail() {
 
   const fetchPaymentsAndExpenses = async (projId) => {
     const [paymentsRes, expensesRes] = await Promise.all([
-      fetch(`${BASE_URL}/payment/get/${projId}`),
-      fetch(`${BASE_URL}/projectExpense/get/${projId}`)
+      fetch(`${BASE_URL}/payment/get/${projId}`,{headers}),
+      fetch(`${BASE_URL}/projectExpense/get/${projId}`,{headers})
     ]);
 
     const paymentsData = (await paymentsRes.json()).data || [];
@@ -91,13 +98,10 @@ export default function ProjectDetail() {
   };
 
   const getProjectDocuments = (projId) => {
-    fetch(`${BASE_URL}/projectDocuments/getAll/${projId}`)
+    fetch(`${BASE_URL}/projectDocuments/getAll/${projId}`,{headers})
       .then(res => res.json())
       .then(data => { setDocuments(data.data || []); 
-                  console.log(data.data);}
-                );
-
-  };
+                  });};
 
   const updateStats = (expenseList, paymentList, typeList, projectData) => {
     const typeTotals = {};
@@ -125,7 +129,7 @@ export default function ProjectDetail() {
   const handleDeletePayment = async (id) => {
     if (!window.confirm('Are you sure you want to delete this payment?')) return;
     try {
-      const res = await fetch(`${BASE_URL}/payment/delete/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${BASE_URL}/payment/delete/${id}`, { method: 'DELETE',headers });
       if (res.ok) {
         const updated = payments.filter(p => p.id !== id);
         setPayments(updated);
@@ -142,7 +146,7 @@ export default function ProjectDetail() {
   const handleDeleteExpense = async (id) => {
     if (!window.confirm('Are you sure you want to delete this expense?')) return;
     try {
-      const res = await fetch(`${BASE_URL}/projectExpense/delete/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${BASE_URL}/projectExpense/delete/${id}`, { method: 'DELETE',headers });
       if (res.ok) {
         const updated = expenses.filter(e => e.id !== id);
         setExpenses(updated);

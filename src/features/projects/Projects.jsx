@@ -18,6 +18,12 @@ export default function Projects() {
   const [deleteError, setDeleteError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
+
   function refreshClients() {
     const clients = JSON.parse(localStorage.getItem('clients') || '[]');
     const map = {};
@@ -57,7 +63,7 @@ const [costSummary, setCostSummary] = useState({
   }, []);
 
   function getAllProjects() {
-    fetch(`${BASE_URL}/project/getAll`)
+    fetch(`${BASE_URL}/project/getAll`,{headers})
       .then(async res => {
         if (!res.ok) {
           const errorData = await res.json().catch(() => ({})); // Handle JSON parse fail
@@ -96,62 +102,64 @@ const [costSummary, setCostSummary] = useState({
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-bar"
         />
-      <table className="projects-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Client</th>
-            <th>City</th>
-            <th>Unit Name</th>
-            <th>Project Manager</th>
-            <th>PO Number</th>
-            
-             {Helper.checkPermission('editProjects') && (<th>Action</th> )}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredProjects.map(project => (
-            <tr key={project.id}
-              onClick={(e) => {
-                if (e.target.tagName.toLowerCase() !== 'button') {
-                  if( Helper.checkPermission('viewProjectDetail')){
-                    navigate('/project-detail', { state: { project } });
-                  }
-                }
-              }}
-              style={{ cursor: 'pointer' }}>
-              <td>{project.id}</td>
-              <td>{project.name}</td>
-              <td>{clientMap[project.client_id] || 'Unknown'}</td>
-              <td>{project.city}</td>
-              <td>{project.unit_name}</td>
-              <td>{project.project_manager_name}</td>
-              <td>{project.po_number}</td>
-              {Helper.checkPermission('editProjects') && (
-                <td>
-                  <button
-                    onClick={() => {
-                              setDeleteError('');
-                              setProjectToDelete(project);
-                            }}
-                    title="Delete project"
-                    className="icon-button delete"
-                  >
-                    🗑️
-                  </button>
-                </td>
-              )}
-            </tr>
-          ))}
-          {filteredProjects.length === 0 && (
-            <tr>
-              <td colSpan="8" className="no-data">No projects found.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
 
+      <div className="projects-table-container">
+        <table className="projects-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Client</th>
+              <th>City</th>
+              <th>Unit Name</th>
+              <th>Project Manager</th>
+              <th>PO Number</th>
+              
+              {Helper.checkPermission('editProjects') && (<th>Action</th> )}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredProjects.map(project => (
+              <tr key={project.id}
+                onClick={(e) => {
+                  if (e.target.tagName.toLowerCase() !== 'button') {
+                    if( Helper.checkPermission('viewProjectDetail')){
+                      navigate('/project-detail', { state: { project } });
+                    }
+                  }
+                }}
+                style={{ cursor: 'pointer' }}>
+                <td>{project.id}</td>
+                <td>{project.name}</td>
+                <td>{clientMap[project.client_id] || 'Unknown'}</td>
+                <td>{project.city}</td>
+                <td>{project.unit_name}</td>
+                <td>{project.project_manager_name}</td>
+                <td>{project.po_number}</td>
+                {Helper.checkPermission('editProjects') && (
+                  <td>
+                    <button
+                      onClick={() => {
+                                setDeleteError('');
+                                setProjectToDelete(project);
+                              }}
+                      title="Delete project"
+                      className="icon-button delete"
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                )}
+              </tr>
+            ))}
+            {filteredProjects.length === 0 && (
+              <tr>
+                <td colSpan="8" className="no-data">No projects found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
       {projectToDelete && (
         <div className="modal-overlay">
           <div className="modal confirm-modal">
@@ -166,6 +174,7 @@ const [costSummary, setCostSummary] = useState({
                   try {
                     const res = await fetch(`${BASE_URL}/project/delete/${projectToDelete.id}`, {
                       method: 'DELETE',
+                      headers
                     });
                     if (!res.ok) {
                       const errorData = await res.json();

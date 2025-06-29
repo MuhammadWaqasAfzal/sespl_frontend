@@ -16,6 +16,11 @@ export default function DocumentsSection({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    company_id,
+  };
+
   const handleUpload = () => {
     if (!selectedFiles.length) return alert("Please select at least one file.");
 
@@ -27,6 +32,7 @@ export default function DocumentsSection({
 
     fetch(`${BASE_URL}/projectDocuments/upload`, {
       method: "POST",
+      headers,
       body: formData
     })
       .then(res => res.json().then(data => ({ status: res.status, data })))
@@ -49,7 +55,7 @@ export default function DocumentsSection({
 
   const handleDelete = id => {
     if (!window.confirm("Are you sure you want to delete this document?")) return;
-    fetch(`${BASE_URL}/projectDocuments/delete/${id}`, { method: 'DELETE' })
+    fetch(`${BASE_URL}/projectDocuments/delete/${id}`, { method: 'DELETE',headers })
       .then(res => res.json().then(data => ({ status: res.status, data })))
       .then(({ status, data }) => {
         if (status === 200) {
@@ -64,7 +70,7 @@ export default function DocumentsSection({
   const handleDownload = async (docId, fileName) => {
     try {
       setDownloadingDocId(docId);
-      const res = await fetch(`${BASE_URL}/projectDocuments/download/${docId}`);
+      const res = await fetch(`${BASE_URL}/projectDocuments/download/${docId}`,{headers});
       if (!res.ok) throw new Error("Failed to download");
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);

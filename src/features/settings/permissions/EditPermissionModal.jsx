@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BASE_URL } from '../../../utils/constants';          // adjust path!
 import '../permissions/AddPermissionModal.css';               // re-use styles
+import Helper from '../../../utils/hepler'
 
 const FLAG_KEYS = [
   'login',
@@ -48,7 +49,7 @@ export default function EditPermissionModal({ isOpen, onClose, permission, onUpd
     try {
       const res  = await fetch(`${BASE_URL}/permission/update/${perm.id}`, {
         method : 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json','company_id': Helper.getCompanyId() },
         body   : JSON.stringify(result),
       });
       const data = await res.json();

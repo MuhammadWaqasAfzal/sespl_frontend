@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './AddEmployeeModal.css';
 import { BASE_URL } from '../../../utils/constants';
+import Helper from '../../../utils/hepler';
 
 const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions }) => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,13 @@ const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions 
     confirmPassword: '',
     permission_id: '',
   });
+
+    const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
+
 
   const [error, setError] = useState('');
 
@@ -57,7 +65,7 @@ const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions 
     // Send POST request
     fetch(`${BASE_URL}/employee/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     })
       .then(res => res.json())

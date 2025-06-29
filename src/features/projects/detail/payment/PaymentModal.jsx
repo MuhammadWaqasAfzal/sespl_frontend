@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './PaymentModal.css';
 import { BASE_URL } from '../../../../utils/constants';
+import Helper from '../../../../utils/hepler';
 
 export default function PaymentModal({ onClose, onSave, projectId }) {
   const [formData, setFormData] = useState({
@@ -11,6 +12,12 @@ export default function PaymentModal({ onClose, onSave, projectId }) {
     bank: '',
     branch: '',
   });
+
+  const company_id = Helper.getCompanyId();
+  const headers = {
+    'Content-Type': 'application/json',
+    company_id,
+  };
 
   const [error, setError] = useState('');
 
@@ -31,7 +38,7 @@ export default function PaymentModal({ onClose, onSave, projectId }) {
     try {
       const res = await fetch(`${BASE_URL}/payment/create`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ ...formData, project_id: projectId,date: today, }),
       });
 
