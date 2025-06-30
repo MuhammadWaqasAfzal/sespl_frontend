@@ -7,7 +7,6 @@
   --form-border: #ccc;
   --form-font: Arial, sans-serif;
 
-  --button-bg: #007bff;
   --button-text: #ffffff;
   --button-hover-bg: #ffc400;
   --button-hover-text: #030116;
@@ -71,14 +70,14 @@
 }
 
 /* Buttons */
-.modal-actions {
+.modal-actionss {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.modal-actions button {
+.modal-actionss button {
   padding: 10px 16px;
   font-size: 1rem;
   font-weight: bold;
@@ -88,26 +87,28 @@
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
-.modal-actions button[type="submit"] {
-  background-color: var(--button-bg);
-  color: var(--button-text);
+/* Reversed Colors */
+.modal-actionss .cancel-button {
+  background-color: #05173b; /* dark blue */
+  color: white;
 }
-
-.modal-actions button[type="submit"]:hover {
+.modal-actionss .cancel-button:hover {
   background-color: var(--button-hover-bg);
   color: var(--button-hover-text);
   transform: scale(1.05);
 }
 
-.cancel-button {
-  background-color: var(--cancel-bg);
-  color: #fff;
+.modal-actionss .add {
+  background-color: var(--cancel-bg); /* red */
+  color: white;
+}
+.modal-actionss .add:hover {
+  background-color: var(--cancel-hover); /* darker red */
+  color: white;
+  transform: scale(1.05);
 }
 
-.cancel-button:hover {
-  background-color: var(--cancel-hover);
-  color: #fff;
-}
+
 
 /* Error message */
 .error {

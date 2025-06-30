@@ -8,7 +8,6 @@
   --form-font-size: 1rem;
   --form-text-color: #333;
 
-  --button-bg: #007bff;
   --button-text: #ffffff;
   --button-hover-bg: #ffc400;
   --button-hover-text: #030116;
@@ -18,7 +17,6 @@
   --cancel-text: #fff;
 
   --spinner-border: #ccc;
-  --spinner-border-top: #007bff;
 }
 
 /* Modal overlay */
@@ -81,14 +79,14 @@
 }
 
 /* Action buttons */
-.modal-actions {
+.modal-actionss {
   margin-top: 1.5rem;
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
 }
 
-.modal-actions button {
+.modal-actionss button {
   padding: 10px 16px;
   font-size: 1rem;
   font-weight: bold;
@@ -98,16 +96,16 @@
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
-.modal-actions button:hover {
+.modal-actionss button:hover {
   transform: scale(1.05);
 }
 
-.modal-actions button:not(.cancel-button) {
-  background-color: var(--button-bg);
+.modal-actionss button:not(.cancel-button) {
+  background-color: #05173b;
   color: var(--button-text);
 }
 
-.modal-actions button:not(.cancel-button):hover {
+.modal-actionss button:not(.cancel-button):hover {
   background-color: var(--button-hover-bg);
   color: var(--button-hover-text);
 }

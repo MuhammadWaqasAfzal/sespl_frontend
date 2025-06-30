@@ -24,6 +24,10 @@ class Helper {
    * @returns {boolean}       - true if the flag is truthy (1 / true)
    */
   static checkPermission(permName) {
+   const designation = JSON.parse(localStorage.getItem('user')).designation;
+   if(designation!=null && designation=="Company")
+    return true;
+
     const perms = Helper._getPermissions();
     return !!perms[permName];
   }

@@ -19,34 +19,50 @@ export default function EditClientModal({ client, onClose, refreshClients }) {
     company_id,
   };
 
-  const handleSubmit = async () => {
-    if (!formData.name || !formData.email) {
-      setError('Client name and email are required');
-      return;
-    }
+const handleSubmit = async () => {
+  if (!formData.name || !formData.email) {
+    setError('Client name and email are required');
+    return;
+  }
 
-    setLoading(true);
-    setError('');
+  // ✅ Validate email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.email)) {
+    setError('Please enter a valid email address.');
+    return;
+  }
 
-    try {
-      const res = await fetch(`${BASE_URL}/client/update/${client.id}`, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify(formData),
-      });
+  // ✅ Validate contact number (optional: length 7-15 digits)
+  const contactRegex = /^[0-9]{7,15}$/;
+  if (formData.contact && !contactRegex.test(formData.contact)) {
+    setError('Please enter a valid contact number (digits only, 7–15 characters).');
+    return;
+  }
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to update client');
+  setLoading(true);
+  setError('');
 
-      // On success
-      refreshClients();
-      onClose();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const res = await fetch(`${BASE_URL}/client/update/${client.id}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(formData),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Failed to update client');
+
+    // On success
+    refreshClients();
+    onClose();
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <div className="modal-overlay">

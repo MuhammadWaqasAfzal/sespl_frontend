@@ -52,14 +52,14 @@
   outline: none;
 }
 
-.modal-actions {
+.modal-actionss {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 20px;
 }
 
-.modal-actions button {
+.modal-actionss button {
   width: 100%;
   padding: 12px 0;
   font-size: 1rem;
@@ -71,21 +71,21 @@
   font-weight: 600;
 }
 
-.modal-actions .save-btn {
+.modal-actionss .save-btn {
   background-color: #0e1d11; /* dark color */
   transition: background-color 0.15s ease;
 }
 
-.modal-actions .save-btn:hover {
+.modal-actionss .save-btn:hover {
   background-color: #175423; /* subtle darker green */
 }
 
-.modal-actions .cancel-btn {
+.modal-actionss .cancel-btn {
   background-color: #dc3545; /* red */
   transition: background-color 0.15s ease;
 }
 
-.modal-actions .cancel-btn:hover {
+.modal-actionss .cancel-btn:hover {
   background-color: #b02a37; /* softer darker red */
 }
 

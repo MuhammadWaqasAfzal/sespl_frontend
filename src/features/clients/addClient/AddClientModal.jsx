@@ -90,9 +90,11 @@ export default function AddClientModal({ onClose, onSubmit }) {
             value={formData.comments}
             onChange={handleChange}
           ></textarea>
-          <div className="modal-actions">
-            <button type="submit">Add Client</button>
-            <button className = "cancel-button" type="button" onClick={onClose}>
+          <div className="modal-actionss">
+           
+           
+             <button className='add' type="submit">Add Client</button>
+              <button className = "cancel-button" type="button" onClick={onClose}>
               Cancel
             </button>
           </div>

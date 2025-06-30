@@ -33,6 +33,22 @@ export default function ProjectDetail() {
   useEffect(() => {
     const localDesignation = localStorage.getItem('designations');
     if (localDesignation) setDesignations(JSON.parse(localDesignation));
+
+
+
+  }, []);
+
+
+  useEffect(() => {
+  if (!location.state?.project) {
+    navigate('/home', { replace: true });
+  }
+}, []);
+
+  useEffect(() => {
+    return () => {
+      window.history.replaceState(null, '', window.location.pathname);
+    };
   }, []);
 
   const company_id = Helper.getCompanyId();
@@ -161,7 +177,7 @@ export default function ProjectDetail() {
   };
 
   if (!project) {
-    return <p>No project data found. <button onClick={() => navigate('/home')}>Go back</button></p>;
+    return <p>No project data found. <button onClick={() => navigate('/home', { replace: true })}>Go back</button></p>;
   }
 
   return (

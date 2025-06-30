@@ -124,7 +124,7 @@ const [costSummary, setCostSummary] = useState({
                 onClick={(e) => {
                   if (e.target.tagName.toLowerCase() !== 'button') {
                     if( Helper.checkPermission('viewProjectDetail')){
-                      navigate('/project-detail', { state: { project } });
+                      navigate('/project-detail', { state: { project },replace: true });
                     }
                   }
                 }}
@@ -166,7 +166,7 @@ const [costSummary, setCostSummary] = useState({
             <h3>Confirm Delete</h3>
             <p>Are you sure you want to delete project <strong>{projectToDelete.name}</strong>?</p>
             {deleteError && <p className="error">{deleteError}</p>}
-            <div className="modal-actions">
+            <div className="modal-actionss">
               <button className="cancel-button"
                 onClick={async () => {
                   setDeleting(true);

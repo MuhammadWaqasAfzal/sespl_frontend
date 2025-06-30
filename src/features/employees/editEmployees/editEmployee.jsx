@@ -97,7 +97,7 @@ const EditEmployeeModal = ({ onClose, onEmployeeUpdated, designations, permissio
             ))}
           </select>
 
-          <div className="modal-actions">
+          <div className="modal-actionss">
             <button type="submit" className="save-btn">Update</button>
             <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
           </div>

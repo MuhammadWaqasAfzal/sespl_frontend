@@ -88,7 +88,6 @@
   padding: 12px 16px;
   border-bottom: 1px solid var(--border-color);
   text-align: left;
-
   font-size: 0.9rem;
   line-height: 1;
 }
@@ -130,7 +129,7 @@
 }
 
 /* Modal styles */
-.modal-overlay {
+.modal-overlays {
   position: fixed;
   top: 0;
   left: 0;
@@ -143,7 +142,8 @@
   align-items: center;
 }
 
-.modal.confirm-modal {
+.modal.confirm-modals {
+  color: #05173b;
   background: #fff;
   padding: 20px 30px;
   border-radius: 8px;
@@ -153,23 +153,53 @@
   text-align: center;
 }
 
-.modal-actions {
+/* Modal button container */
+.modal-actionss {
   margin-top: 20px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   gap: 15px;
 }
 
-.cancel-button {
-  background-color: var(--error-color);
-  color: white;
+/* Modal buttons */
+.modal-actionss button {
+  flex: 1;
+  padding: 12px 0;
   font-weight: bold;
-  padding: 10px 16px;
-  border: none;
+  font-size: 1rem;
   border-radius: 6px;
   cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
 }
 
-.cancel-button:hover {
+/* Yes, Delete button */
+.modal-actionss button:first-child {
+  background-color: var(--btn-bg);
+  color: white;
+}
+
+.modal-actionss button:first-child:hover {
+  color: #020a17;
+  background-color: #ffc400;
+}
+
+/* Cancel button */
+.modal-actionss button:last-child {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.modal-actionss button:last-child:hover {
   background-color: #b02a37;
+  color: white;
+}
+
+/* Error message */
+.error {
+  color: var(--error-color);
+  margin-top: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
 }

@@ -114,7 +114,7 @@ const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions 
           <input name="password" type="password" placeholder="Password" onChange={handleChange} autoComplete="new-password" />
           <input name="confirmPassword" type="password" placeholder="Confirm Password" onChange={handleChange} autoComplete="new-password" />
 
-          <div className="modal-actions">
+          <div className="modal-actionss">
             <button type="submit" className="save-btn">Add</button>
             <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
           </div>

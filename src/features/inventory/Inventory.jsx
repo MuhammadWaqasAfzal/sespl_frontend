@@ -142,7 +142,11 @@ const Inventory = () => {
           type="number"
           placeholder="Enter quantity"
           value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
+          min="0"
+          onChange={(e) => {
+            const val = parseInt(e.target.value, 10);
+            setQuantity(val >= 0 || e.target.value === '' ? e.target.value : '0');
+          }}
         />
         <button onClick={handleAdd}>+ Add Inventory</button>
       </div>

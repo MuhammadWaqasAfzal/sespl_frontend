@@ -8,7 +8,7 @@ function ConfirmDeleteModal({ isOpen, onClose, onConfirm, permissionName }) {
     <div className="confirm-delete-modal">
       <div className="modal-content">
         <h3>Are you sure you want to delete the permission: {permissionName}?</h3>
-        <div className="modal-actions">
+        <div className="modal-actionss">
           <button className="cancel-btn" onClick={onClose}>
             Cancel
           </button>

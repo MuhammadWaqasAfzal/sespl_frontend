@@ -144,7 +144,7 @@ export default function Client() {
                         ✏️
                       </button>
                       <button
-                        onClick={() => setClientToDelete(client)}
+                        onClick={() => {setClientToDelete(client); setDeleteError('');}}
                         className="icon-button delete"
                         aria-label={`Delete client ${client.name}`}
                         title="Delete client"
@@ -160,15 +160,15 @@ export default function Client() {
         </table>
       </div>
       {clientToDelete && (
-        <div className="modal-overlay">
-          <div className="modal confirm-modal">
+        <div className="modal-overlays">
+          <div className="modal confirm-modals">
             <h3>Confirm Delete</h3>
             <p>
               Are you sure you want to delete client{' '}
               <strong>{clientToDelete.name}</strong>?
             </p>
             {deleteError && <p className="error">{deleteError}</p>}
-            <div className="modal-actions">
+            <div className="modal-actionss">
               <button className="cancel-button" onClick={handleDelete} disabled={deleting}>
                 {deleting ? 'Deleting...' : 'Yes, Delete'}
               </button>

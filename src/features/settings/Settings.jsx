@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './settings.css';
+import './Settings.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import AddPermissionModal from './permissions/AddPermissionModal';
 import EditPermissionModal from './permissions/EditPermissionModal';

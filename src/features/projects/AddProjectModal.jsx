@@ -112,11 +112,12 @@ export default function AddProjectModal({ onClose, onSubmit, clients }) {
           <textarea name="description" placeholder="Project Description" value={form.description} onChange={handleChange} disabled={loading}></textarea>
         </div>
 
-        <div className="modal-actions">
-          <button onClick={handleSubmit} disabled={loading || !isFormValid()}>
+        <div className="modal-actionss">
+         
+          <button className="cancel-button" onClick={onClose} disabled={loading}>Cancel</button>
+           <button className='add-button' onClick={handleSubmit} disabled={loading || !isFormValid()}>
             {loading ? 'Creating...' : 'Create'}
           </button>
-          <button className="cancel-button" onClick={onClose} disabled={loading}>Cancel</button>
         </div>
 
         {loading && (
