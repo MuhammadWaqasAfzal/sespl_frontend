@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Dashboard.css";
 import { BASE_URL } from "../../utils/constants";
 import Helper from '../../utils/hepler';
+import Loader from'../../utils/Loader';
 
 import {
   Bar,
@@ -48,7 +49,10 @@ const Dashboard = () => {
       .catch((err) => console.error("Failed to load stats", err));
   }, []);
 
-  if (!stats) return <p className="loading">Loading dashboard...</p>;
+if (!stats) {
+  return <Loader />;
+}
+
 
   const pieData = {
     labels: ["Ongoing", "Completed"],

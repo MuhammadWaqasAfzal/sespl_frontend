@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { BASE_URL } from '../../../utils/constants';
 import './EditProjectModal.css';
 import Helper from '../../../utils/hepler';
+import Loader from '../../../utils/Loader'; 
 
 export default function EditProjectModal({ project, onClose, onUpdate }) {
   const [clients, setClients] = useState({});
@@ -12,7 +13,7 @@ export default function EditProjectModal({ project, onClose, onUpdate }) {
   const [loading, setLoading] = useState(false);
 
   const formatDateForSQL = (date) => {
-    return new Date(date).toISOString().split('T')[0]; // 'YYYY-MM-DD'
+    return new Date(date).toISOString().split('T')[0];
   };
 
   useEffect(() => {
@@ -88,6 +89,8 @@ export default function EditProjectModal({ project, onClose, onUpdate }) {
       <div className="modal confirm-modal">
         <h3>Edit Project</h3>
 
+        {loading && <Loader />}
+
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -95,35 +98,62 @@ export default function EditProjectModal({ project, onClose, onUpdate }) {
         >
           {({ values }) => (
             <Form className="form-grid">
-               <label>Project Name</label> <Field name="name" placeholder="Project Name" />
+              <label>Project Name</label>
+              <Field name="name" placeholder="Project Name" />
               <ErrorMessage name="name" component="div" className="error" />
 
-               <label>Description</label> <Field name="description" placeholder="Description" />
-                <label>City</label><Field name="city" placeholder="City" />
-                <label>Country</label><Field name="country" placeholder="Country" />
-                <label>Unit Name</label><Field name="unit_name" placeholder="Unit Name" />
-               <label>PM Name</label> <Field name="project_manager_name" placeholder="Manager Name" />
-               <label>PM Contact</label> <Field name="project_manager_contact" placeholder="Manager Contact" />
-               
-               <label>Total Amount</label> <Field name="total_amount_with_out_tax" placeholder="Total without Tax" type="number" />
-              <ErrorMessage name="total_amount_with_out_tax" component="div" className="error" />
-               <label>Total Amount(inc. tax)</label><Field name="total_amount_with_tax" placeholder="Total with Tax" type="number" />
-              <ErrorMessage name="total_amount_with_tax" component="div" className="error" />
-                <label>PO Number</label><Field name="po_number" placeholder="PO Number" />
-               <label>Start Date</label> <Field name="start_date" type="date" />
+              <label>Description</label>
+              <Field name="description" placeholder="Description" />
 
-            <label className="toggle-switch">
+              <label>City</label>
+              <Field name="city" placeholder="City" />
+
+              <label>Country</label>
+              <Field name="country" placeholder="Country" />
+
+              <label>Unit Name</label>
+              <Field name="unit_name" placeholder="Unit Name" />
+
+              <label>PM Name</label>
+              <Field name="project_manager_name" placeholder="Manager Name" />
+
+              <label>PM Contact</label>
+              <Field name="project_manager_contact" placeholder="Manager Contact" />
+
+              <label>Total Amount</label>
+              <Field name="total_amount_with_out_tax" placeholder="Total without Tax" type="number"  onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}/>
+              <ErrorMessage name="total_amount_with_out_tax" component="div" className="error" />
+
+              <label>Total Amount (inc. tax)</label>
+              <Field name="total_amount_with_tax" placeholder="Total with Tax" type="number"  onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}/>
+              <ErrorMessage name="total_amount_with_tax" component="div" className="error" />
+
+              <label>PO Number</label>
+              <Field name="po_number" placeholder="PO Number" />
+
+              <label>Start Date</label>
+              <Field name="start_date" type="date" />
+
+              <label className="toggle-switch">
                 <Field name="completed">
-                    {({ field, form }) => (
+                  {({ field, form }) => (
                     <input
-                        type="checkbox"
-                        checked={field.value}
-                        onChange={() => form.setFieldValue('completed', !field.value)}
+                      type="checkbox"
+                      checked={field.value}
+                      onChange={() => form.setFieldValue('completed', !field.value)}
                     />
-                    )}
+                  )}
                 </Field>
                 Completed
-            </label>
+              </label>
 
               {values.completed && (
                 <div>
@@ -136,16 +166,18 @@ export default function EditProjectModal({ project, onClose, onUpdate }) {
                   />
                 </div>
               )}
-              <div >
-<label>Client</label>
-              <Field as="select" name="client_id">
-                <option value="">Select Client</option>
-                {Object.entries(clients).map(([id, name]) => (
-                  <option key={id} value={id}>{name}</option>
-                ))}
-              </Field>
-              <ErrorMessage name="client_id" component="div" className="error" />
-</div>
+
+              <div>
+                <label>Client</label>
+                <Field as="select" name="client_id">
+                  <option value="">Select Client</option>
+                  {Object.entries(clients).map(([id, name]) => (
+                    <option key={id} value={id}>{name}</option>
+                  ))}
+                </Field>
+                <ErrorMessage name="client_id" component="div" className="error" />
+              </div>
+
               {error && <div className="error toast">{error}</div>}
               {success && <div className="success toast">{success}</div>}
 

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import './AddClientModal.css';
 import Helper from '../../../utils/hepler';
-
+import Loader from '../../../utils/Loader'
 
 export default function AddClientModal({ onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -75,6 +75,11 @@ export default function AddClientModal({ onClose, onSubmit }) {
             placeholder="Contact Number"
             value={formData.contact}
             onChange={handleChange}
+            onKeyDown={(e) => {
+              if (["e", "E", "+", "-"].includes(e.key)) {
+                e.preventDefault();
+              }
+            }}
           />
           <input
             type="email"

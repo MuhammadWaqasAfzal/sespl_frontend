@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './AddExpenseModal.css';
 import { BASE_URL } from '../../../../utils/constants';
 import Helper from '../../../../utils/hepler';
+import Loader from '../../../../utils/Loader'; // ✅ Import loader
 
 export default function AddExpenseModal({ projectId, onClose, onSave }) {
   const [expenses, setExpenses] = useState([]);
@@ -12,13 +13,13 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
   const [date, setDate] = useState('');
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // ✅ State for loader
 
   const company_id = Helper.getCompanyId();
   const headers = {
     'Content-Type': 'application/json',
     company_id,
   };
-
 
   useEffect(() => {
     const localExpenses = localStorage.getItem('expenses');
@@ -45,9 +46,9 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
 
   const selectedExpense = expenses.find(exp => exp.id.toString() === selectedExpenseId);
   const isWagesExpense = selectedExpense?.type?.toLowerCase().includes('wages') ||
-                          selectedExpense?.type?.toLowerCase().includes('pays') ||
-                          selectedExpense?.type?.toLowerCase().includes('wage')
-                          selectedExpense?.type?.toLowerCase().includes('pay') ;
+                         selectedExpense?.type?.toLowerCase().includes('pays') ||
+                         selectedExpense?.type?.toLowerCase().includes('wage') ||
+                         selectedExpense?.type?.toLowerCase().includes('pay');
 
   const handleSubmit = async () => {
     if (!selectedExpenseId || !description || !date || !amount || (isWagesExpense && !selectedDesignation)) {
@@ -55,13 +56,14 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
       return;
     }
 
+    setLoading(true);
     const payload = {
       project_id: projectId,
       expense_id: parseInt(selectedExpenseId),
       description,
       date,
       amount: parseFloat(amount),
-      ...(isWagesExpense && { designation_id: parseInt(selectedDesignation)}),
+      ...(isWagesExpense && { designation_id: parseInt(selectedDesignation) }),
     };
 
     try {
@@ -81,6 +83,8 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
     } catch (err) {
       console.error('API error:', err);
       setError('An error occurred while creating the expense.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,6 +92,8 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
     <div className="modal-overlay">
       <div className="modal">
         <h2>Add New Expense</h2>
+
+        {loading && <Loader />} {/* ✅ Loader */}
 
         <label>Expense Type:</label>
         <select
@@ -108,7 +114,7 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
             <select
               value={selectedDesignation}
               onChange={(e) => setSelectedDesignation(e.target.value)}
-              >
+            >
               <option value="">-- Select Designation --</option>
               {designations.map((des) => (
                 <option key={des.id} value={des.id}>
@@ -116,7 +122,6 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
                 </option>
               ))}
             </select>
-
           </>
         )}
 
@@ -142,13 +147,22 @@ export default function AddExpenseModal({ projectId, onClose, onSave }) {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="e.g., 250.75"
+          onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
         />
 
         {error && <p className="error-message">{error}</p>}
 
         <div className="modal-buttons">
-          <button className="add-button" onClick={handleSubmit}>Save</button>
-          <button className="cancel-button" onClick={onClose}>Cancel</button>
+          <button className="add-button" onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Saving...' : 'Save'}
+          </button>
+          <button className="cancel-button" onClick={onClose} disabled={loading}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>

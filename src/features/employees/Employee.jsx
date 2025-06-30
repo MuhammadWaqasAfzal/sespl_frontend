@@ -5,7 +5,7 @@ import { BASE_URL } from '../../utils/constants';
 import AddEmployeeModal from './addEmployees/AddEmployeeModal';
 import EditEmployeeModal from './editEmployees/editEmployee';
 import Helper from '../../utils/hepler';    
-import'../../index.css'
+import Loader from '../../utils/Loader';
 
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
@@ -15,7 +15,8 @@ const Employee = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-    
+  const [loading, setLoading] = useState(true);
+
   const company_id = Helper.getCompanyId();
   const headers = {
     'Content-Type': 'application/json',
@@ -23,9 +24,9 @@ const Employee = () => {
   };
 
   useEffect(() => {
-   getAllEmployees();
-   getDesignations();
-   getPermissions();
+    getAllEmployees();
+    getDesignations();
+    getPermissions();
   }, []);
 
   const handleEdit = (emp) => {
@@ -33,42 +34,39 @@ const Employee = () => {
     setShowEditModal(true);
   };
 
-  function getDesignations(){
+  function getDesignations() {
     const storedDesignations = localStorage.getItem('designations');
     if (storedDesignations) {
       setDesignations(JSON.parse(storedDesignations));
     }
   }
-  // Get designation title from designation_id
-  const getDesignationTitle = (id) => {
-    const found = designations.find((d) => d.id === id);
-    return found ? found.title : `ID: ${id}`;
-  };
 
-  function getPermissions(){
+  function getPermissions() {
     const storedPermissions = localStorage.getItem('permissions');
     if (storedPermissions) {
       setPermissions(JSON.parse(storedPermissions));
     }
   }
 
-  function getAllEmployees(){
- fetch(`${BASE_URL}/employee/getAll`,{headers})
+  function getAllEmployees() {
+    setLoading(true);
+    fetch(`${BASE_URL}/employee/getAll`, { headers })
       .then((res) => res.json())
       .then((data) => {
-      
         if (data.statusCode === 200) {
           setEmployees(data.data);
         }
       })
-      .catch((err) => console.error('Failed to fetch employees:', err));
+      .catch((err) => console.error('Failed to fetch employees:', err))
+      .finally(() => setLoading(false));
   }
 
   const handleDelete = (id) => {
     if (!window.confirm('Are you sure you want to delete this employee?')) return;
-
+    setLoading(true);
     fetch(`${BASE_URL}/employee/delete/${id}`, {
-      method: 'DELETE',headers
+      method: 'DELETE',
+      headers,
     })
       .then((res) => res.json())
       .then((data) => {
@@ -81,26 +79,29 @@ const Employee = () => {
       .catch((err) => {
         console.error('Failed to delete employee:', err);
         alert('Error occurred while deleting employee.');
-      });
+      }).finally(() => setLoading(false));
   };
 
-  
+  const getDesignationTitle = (id) => {
+    const found = designations.find((d) => d.id === id);
+    return found ? found.title : `ID: ${id}`;
+  };
 
   const filteredEmployees = employees.filter((emp) =>
     emp.name.toLowerCase().includes(searchTerm.trim().toLowerCase()) ||
     emp.email.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 
+  if (loading) return <Loader />;
+
   return (
     <div className="employee-container">
       <div className="employee-header">
-       <h2 className="heading">Employees</h2>
+        <h2 className="heading">Employees</h2>
         {Helper.checkPermission('editEmployees') && (
-        <button className="add-btn" 
-                onClick={() => setShowAddModal(true)}
-                >
-          + Add New Employee
-        </button>
+          <button className="add-btn" onClick={() => setShowAddModal(true)}>
+            + Add New Employee
+          </button>
         )}
       </div>
 
@@ -125,14 +126,14 @@ const Employee = () => {
               <th>Address</th>
               <th>City</th>
               <th>Country</th>
-              {Helper.checkPermission('editEmployees') && ( <th>Actions</th>)}
+              {Helper.checkPermission('editEmployees') && <th>Actions</th>}
             </tr>
           </thead>
-          
+
           <tbody>
             {filteredEmployees.map((emp) => (
               <tr key={emp.id}>
-                  <td>{emp.id}</td>
+                <td>{emp.id}</td>
                 <td>{emp.name}</td>
                 <td>{emp.email}</td>
                 <td>{emp.cnic}</td>
@@ -142,31 +143,28 @@ const Employee = () => {
                 <td>{emp.city}</td>
                 <td>{emp.country}</td>
                 {Helper.checkPermission('editEmployees') && (
-                <td>
-                
-                  <button 
-                    className="icon-button edit"
-                    
+                  <td>
+                    <button
+                      className="icon-button edit"
                       onClick={() => handleEdit(emp)}
-                      aria-label={`Edit client ${emp.name}`}
-                      title="Edit client"
+                      aria-label={`Edit employee ${emp.name}`}
+                      title="Edit employee"
                     >
                       ✏️
                     </button>
                     <button
                       onClick={() => handleDelete(emp.id)}
                       className="icon-button delete"
-                      aria-label={`Delete client ${emp.name}`}
-                      title="Delete client"
+                      aria-label={`Delete employee ${emp.name}`}
+                      title="Delete employee"
                     >
                       🗑️
                     </button>
-                    
-                </td>
+                  </td>
                 )}
               </tr>
             ))}
-              {filteredEmployees.length === 0 && (
+            {filteredEmployees.length === 0 && (
               <tr>
                 <td colSpan="10" className="no-data">No employees found.</td>
               </tr>
@@ -176,27 +174,26 @@ const Employee = () => {
       </div>
 
       {showAddModal && (
-  <AddEmployeeModal
-    onClose={() => setShowAddModal(false)}
-    designations={designations}
-    permissions={permissions}
-    onEmployeeAdded={() => {
-      getAllEmployees();
-      setShowAddModal(false);
-    }}
-  />
-)}
+        <AddEmployeeModal
+          onClose={() => setShowAddModal(false)}
+          designations={designations}
+          permissions={permissions}
+          onEmployeeAdded={() => {
+            getAllEmployees();
+            setShowAddModal(false);
+          }}
+        />
+      )}
 
-{showEditModal && selectedEmployee && (
-  <EditEmployeeModal
-    onClose={() => setShowEditModal(false)}
-    onEmployeeUpdated={getAllEmployees}
-    designations={designations}
-    permissions={permissions}
-    employee={selectedEmployee}
-  />
-)}
-
+      {showEditModal && selectedEmployee && (
+        <EditEmployeeModal
+          onClose={() => setShowEditModal(false)}
+          onEmployeeUpdated={getAllEmployees}
+          designations={designations}
+          permissions={permissions}
+          employee={selectedEmployee}
+        />
+      )}
     </div>
   );
 };

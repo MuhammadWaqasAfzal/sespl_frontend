@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './Projects.css';
-import '../../index.css';
 import { BASE_URL } from '../../utils/constants';
 import AddProjectModal from './AddProjectModal';
 import { useNavigate } from 'react-router-dom';
 import Helper from '../../utils/hepler';
+import Loader from '../../utils/Loader';
 
 export default function Projects() {
   const navigate = useNavigate();
@@ -33,29 +33,27 @@ export default function Projects() {
     setClientMap(map);
   }
 
-const filteredProjects = projects.filter(project => {
-  const name = (project.name || '').toLowerCase();
-  const clientName = (clientMap[project.client_id] || '').toLowerCase();
-  const unit = (project.unit_name || '').toLowerCase();
-  const po = (project.po_number || '').toLowerCase();
-  const term = searchTerm.trim().toLowerCase();
+  const filteredProjects = projects.filter(project => {
+    const name = (project.name || '').toLowerCase();
+    const clientName = (clientMap[project.client_id] || '').toLowerCase();
+    const unit = (project.unit_name || '').toLowerCase();
+    const po = (project.po_number || '').toLowerCase();
+    const term = searchTerm.trim().toLowerCase();
 
-  return (
-    name.includes(term) ||
-    clientName.includes(term) ||
-    unit.includes(term) ||
-    po.includes(term)
-  );
-});
+    return (
+      name.includes(term) ||
+      clientName.includes(term) ||
+      unit.includes(term) ||
+      po.includes(term)
+    );
+  });
 
-const [expenseBreakdown, setExpenseBreakdown] = useState([]);
-const [costSummary, setCostSummary] = useState({
-  total: 0,
-  usedWithTax: 0,
-  usedWithoutTax: 0
-});
-
-  
+  const [expenseBreakdown, setExpenseBreakdown] = useState([]);
+  const [costSummary, setCostSummary] = useState({
+    total: 0,
+    usedWithTax: 0,
+    usedWithoutTax: 0
+  });
 
   useEffect(() => {
     refreshClients();
@@ -63,25 +61,27 @@ const [costSummary, setCostSummary] = useState({
   }, []);
 
   function getAllProjects() {
-    fetch(`${BASE_URL}/project/getAll`,{headers})
+    setLoading(true);
+    fetch(`${BASE_URL}/project/getAll`, { headers })
       .then(async res => {
         if (!res.ok) {
-          const errorData = await res.json().catch(() => ({})); // Handle JSON parse fail
+          const errorData = await res.json().catch(() => ({}));
           throw new Error(errorData.message || 'Failed to fetch projects');
         }
         return res.json();
       })
       .then(data => {
         setProjects(data.data || []);
-        setLoading(false);
       })
       .catch(err => {
         setError(err.message);
+      })
+      .finally(() => {
         setLoading(false);
-    });
+      });
   }
 
-  if (loading) return <p className="loading">Loading projects...</p>;
+  if (loading) return <div style={{ padding: '3rem' }}><Loader /></div>;
   if (error) return <p className="error">Error: {error}</p>;
 
   return (
@@ -95,13 +95,13 @@ const [costSummary, setCostSummary] = useState({
         )}
       </div>
 
-        <input
-          type="text"
-          placeholder="Search by name, client, unit_name or po_number..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-bar"
-        />
+      <input
+        type="text"
+        placeholder="Search by name, client, unit_name or po_number..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-bar"
+      />
 
       <div className="projects-table-container">
         <table className="projects-table">
@@ -114,8 +114,7 @@ const [costSummary, setCostSummary] = useState({
               <th>Unit Name</th>
               <th>Project Manager</th>
               <th>PO Number</th>
-              
-              {Helper.checkPermission('editProjects') && (<th>Action</th> )}
+              {Helper.checkPermission('editProjects') && (<th>Action</th>)}
             </tr>
           </thead>
           <tbody>
@@ -123,8 +122,8 @@ const [costSummary, setCostSummary] = useState({
               <tr key={project.id}
                 onClick={(e) => {
                   if (e.target.tagName.toLowerCase() !== 'button') {
-                    if( Helper.checkPermission('viewProjectDetail')){
-                      navigate('/project-detail', { state: { project },replace: true });
+                    if (Helper.checkPermission('viewProjectDetail')) {
+                      navigate('/project-detail', { state: { project }, replace: true });
                     }
                   }
                 }}
@@ -140,9 +139,9 @@ const [costSummary, setCostSummary] = useState({
                   <td>
                     <button
                       onClick={() => {
-                                setDeleteError('');
-                                setProjectToDelete(project);
-                              }}
+                        setDeleteError('');
+                        setProjectToDelete(project);
+                      }}
                       title="Delete project"
                       className="icon-button delete"
                     >
@@ -160,6 +159,7 @@ const [costSummary, setCostSummary] = useState({
           </tbody>
         </table>
       </div>
+
       {projectToDelete && (
         <div className="modal-overlay">
           <div className="modal confirm-modal">
@@ -167,9 +167,11 @@ const [costSummary, setCostSummary] = useState({
             <p>Are you sure you want to delete project <strong>{projectToDelete.name}</strong>?</p>
             {deleteError && <p className="error">{deleteError}</p>}
             <div className="modal-actionss">
-              <button className="cancel-button"
+              <button
+                className="cancel-button"
                 onClick={async () => {
                   setDeleting(true);
+                  setLoading(true);
                   setDeleteError('');
                   try {
                     const res = await fetch(`${BASE_URL}/project/delete/${projectToDelete.id}`, {
@@ -186,10 +188,10 @@ const [costSummary, setCostSummary] = useState({
                     setDeleteError(err.message);
                   } finally {
                     setDeleting(false);
+                    setLoading(false);
                   }
                 }}
                 disabled={deleting}
-                
               >
                 {deleting ? 'Deleting...' : 'Yes, Delete'}
               </button>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './PaymentModal.css';
 import { BASE_URL } from '../../../../utils/constants';
 import Helper from '../../../../utils/hepler';
+import Loader from '../../../../utils/Loader';  // adjust path if needed
 
 export default function PaymentModal({ onClose, onSave, projectId }) {
   const [formData, setFormData] = useState({
@@ -13,13 +14,14 @@ export default function PaymentModal({ onClose, onSave, projectId }) {
     branch: '',
   });
 
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const company_id = Helper.getCompanyId();
   const headers = {
     'Content-Type': 'application/json',
     company_id,
   };
-
-  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,12 +36,14 @@ export default function PaymentModal({ onClose, onSave, projectId }) {
       return;
     }
 
+    setLoading(true);
     const today = new Date().toISOString().split('T')[0];
+
     try {
       const res = await fetch(`${BASE_URL}/payment/create`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ ...formData, project_id: projectId,date: today, }),
+        body: JSON.stringify({ ...formData, project_id: projectId, date: today }),
       });
 
       const data = await res.json();
@@ -52,6 +56,8 @@ export default function PaymentModal({ onClose, onSave, projectId }) {
     } catch (err) {
       console.error('API error:', err);
       setError('An error occurred while adding payment.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,8 +66,15 @@ export default function PaymentModal({ onClose, onSave, projectId }) {
       <div className="modal">
         <h2>Add New Payment</h2>
 
+        {loading && <Loader />}
+
         <label>Amount (Rs.):</label>
-        <input type="number" name="amount" placeholder="e.g., 500.00" value={formData.amount} onChange={handleChange} />
+        <input type="number" name="amount" placeholder="e.g., 500.00" value={formData.amount} onChange={handleChange} 
+          onKeyDown={(e) => {
+            if (["e", "E", "+", "-"].includes(e.key)) {
+              e.preventDefault();
+            }
+          }} />
 
         <label>Cheque No:</label>
         <input type="text" name="cheque_no" placeholder="Cheque number" value={formData.cheque_no} onChange={handleChange} />
@@ -81,8 +94,12 @@ export default function PaymentModal({ onClose, onSave, projectId }) {
         {error && <p className="error-message">{error}</p>}
 
         <div className="modal-buttons">
-          <button className="add-button" onClick={handleSubmit}>Save</button>
-          <button className="cancel-button" onClick={onClose}>Cancel</button>
+          <button className="add-button" onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Saving...' : 'Save'}
+          </button>
+          <button className="cancel-button" onClick={onClose} disabled={loading}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>

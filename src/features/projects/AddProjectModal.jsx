@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './AddProjectModal.css';
 import { BASE_URL } from '../../utils/constants';
 import Helper from '../../utils/hepler';
-
+import Loader from '../../utils/Loader'
 export default function AddProjectModal({ onClose, onSubmit, clients }) {
   const [form, setForm] = useState({
     name: '',
@@ -105,9 +105,21 @@ export default function AddProjectModal({ onClose, onSubmit, clients }) {
           <input type="text" name="country" placeholder="Country" value={form.country} onChange={handleChange} disabled={loading} />
           <input type="text" name="unit_name" placeholder="Unit Name" value={form.unit_name} onChange={handleChange} disabled={loading} />
           <input type="text" name="project_manager_name" placeholder="Project Manager" value={form.project_manager_name} onChange={handleChange} disabled={loading} />
-          <input type="number" name="project_manager_contact" placeholder="Manager Contact" value={form.project_manager_contact} onChange={handleChange} disabled={loading} />
-          <input type="number" name="total_amount_with_out_tax" placeholder="Amount (excl. tax)" value={form.total_amount_with_out_tax} onChange={handleChange} disabled={loading} />
-          <input type="number" name="total_amount_with_tax" placeholder="Amount (incl. tax)" value={form.total_amount_with_tax} onChange={handleChange} disabled={loading} />
+          <input type="number" name="project_manager_contact" placeholder="Manager Contact" value={form.project_manager_contact} onChange={handleChange} disabled={loading} onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }} />
+          <input type="number" name="total_amount_with_out_tax" placeholder="Amount (excl. tax)" value={form.total_amount_with_out_tax} onChange={handleChange} disabled={loading}onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }} />
+          <input type="number" name="total_amount_with_tax" placeholder="Amount (incl. tax)" value={form.total_amount_with_tax} onChange={handleChange} disabled={loading}onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }} />
           <input type="text" name="po_number" placeholder="PO Number" value={form.po_number} onChange={handleChange} disabled={loading} />
           <textarea name="description" placeholder="Project Description" value={form.description} onChange={handleChange} disabled={loading}></textarea>
         </div>
@@ -120,12 +132,8 @@ export default function AddProjectModal({ onClose, onSubmit, clients }) {
           </button>
         </div>
 
-        {loading && (
-          <div className="loading-overlay">
-            <div className="spinner"></div>
-            <p>Creating project...</p>
-          </div>
-        )}
+        {loading && <Loader />}
+
       </div>
     </div>
   );

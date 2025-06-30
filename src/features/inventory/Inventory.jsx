@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Inventory.css';
 import { BASE_URL } from '../../utils/constants';
 import Helper from '../../utils/hepler';
+import Loader from '../../utils/Loader';
 
 const Inventory = () => {
   const [inventory, setInventory] = useState([]);
@@ -9,6 +10,7 @@ const Inventory = () => {
   const [quantity, setQuantity] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [editItem, setEditItem] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const company_id = Helper.getCompanyId();
   const headers = {
@@ -21,6 +23,7 @@ const Inventory = () => {
   }, []);
 
   const getAllInventory = () => {
+    setLoading(true);
     fetch(`${BASE_URL}/inventory/getAll`, { headers })
       .then(res => res.json())
       .then(data => {
@@ -33,7 +36,8 @@ const Inventory = () => {
       .catch(err => {
         console.error('Failed to fetch inventory:', err);
         alert('Error fetching inventory.');
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleAdd = () => {
@@ -42,6 +46,7 @@ const Inventory = () => {
       return;
     }
 
+    setLoading(true);
     fetch(`${BASE_URL}/inventory/create`, {
       method: 'POST',
       headers,
@@ -60,12 +65,12 @@ const Inventory = () => {
       .catch(err => {
         console.error('Failed to add inventory:', err);
         alert('Error adding inventory.');
-      });
+      }).finally(() => setLoading(false));
   };
 
   const handleDelete = (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
-
+    setLoading(true);
     fetch(`${BASE_URL}/inventory/delete/${id}`, {
       method: 'DELETE',
       headers
@@ -81,7 +86,7 @@ const Inventory = () => {
       .catch(err => {
         console.error('Failed to delete inventory:', err);
         alert('Error deleting inventory.');
-      });
+      }).finally(() => setLoading(false));
   };
 
   const handleUpdate = () => {
@@ -89,7 +94,7 @@ const Inventory = () => {
       alert('Please fill out both fields.');
       return;
     }
-
+    setLoading(true)
     fetch(`${BASE_URL}/inventory/update/${editItem.id}`, {
       method: 'PUT',
       headers,
@@ -110,12 +115,14 @@ const Inventory = () => {
       .catch(err => {
         console.error('Failed to update inventory:', err);
         alert('Error updating inventory.');
-      });
+      }) .finally(() => setLoading(false));
   };
 
   const filteredInventory = inventory.filter(item =>
     item.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
+
+  if (loading) return <Loader />;
 
   return (
     <div className="inventory-container">
@@ -147,6 +154,11 @@ const Inventory = () => {
             const val = parseInt(e.target.value, 10);
             setQuantity(val >= 0 || e.target.value === '' ? e.target.value : '0');
           }}
+          onKeyDown={(e) => {
+              if (["e", "E", "+", "-"].includes(e.key)) {
+                e.preventDefault();
+              }
+            }}
         />
         <button onClick={handleAdd}>+ Add Inventory</button>
       </div>
@@ -211,6 +223,11 @@ const Inventory = () => {
               onChange={(e) =>
                 setEditItem({ ...editItem, quantity: e.target.value })
               }
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
             />
             <div className="modal-actions">
               <button onClick={handleUpdate}>Update</button>

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './EditClientModal.css';
 import { BASE_URL } from '../../../utils/constants';
 import Helper from '../../../utils/hepler';
+import Loader from '../../../utils/Loader';
 
 export default function EditClientModal({ client, onClose, refreshClients }) {
   const [formData, setFormData] = useState({ ...client });
@@ -115,7 +116,7 @@ const handleSubmit = async () => {
 
         <div className="modal-actions">
           <button onClick={handleSubmit} disabled={loading}>
-            {loading ? 'Updating...' : 'Update Client'}
+            if (loading) return Loader;
           </button>
           <button className="cancel-button" onClick={onClose} disabled={loading}>
             Cancel

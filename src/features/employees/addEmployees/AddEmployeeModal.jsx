@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './AddEmployeeModal.css';
 import { BASE_URL } from '../../../utils/constants';
 import Helper from '../../../utils/hepler';
+import Loader from '../../../utils/Loader';
 
 const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions }) => {
   const [formData, setFormData] = useState({
@@ -19,14 +20,14 @@ const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions 
     permission_id: '',
   });
 
-    const company_id = Helper.getCompanyId();
+  const company_id = Helper.getCompanyId();
   const headers = {
     'Content-Type': 'application/json',
     company_id,
   };
 
-
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,48 +39,46 @@ const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions 
     return regex.test(email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check all fields
     for (const key in formData) {
       if (!formData[key]) {
         return setError('All fields are required.');
       }
     }
 
-    // Validate email
     if (!validateEmail(formData.email)) {
       return setError('Please enter a valid email address.');
     }
 
-    // Check passwords match
     if (formData.password !== formData.confirmPassword) {
       return setError('Passwords do not match.');
     }
 
-    // Prepare data
     const payload = { ...formData };
     delete payload.confirmPassword;
 
-    // Send POST request
-    fetch(`${BASE_URL}/employee/create`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(payload),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.statusCode === 201) {
-          onEmployeeAdded();
-          onClose();
-        } else {
-          setError(data.message || 'Failed to add employee.');
-        }
-      })
-      .catch(() => {
-        setError('An error occurred while adding the employee.');
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/employee/create`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
       });
+      const data = await res.json();
+
+      if (data.statusCode === 201) {
+        onEmployeeAdded();
+        onClose();
+      } else {
+        setError(data.message || 'Failed to add employee.');
+      }
+    } catch {
+      setError('An error occurred while adding the employee.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -87,6 +86,7 @@ const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions 
       <div className="modal">
         <h3>Add New Employee</h3>
         {error && <p className="error">{error}</p>}
+
         <form onSubmit={handleSubmit} className="employee-form" autoComplete="off">
           <input name="name" placeholder="Name" onChange={handleChange} autoComplete="off" />
           <input name="email" type="email" placeholder="Email" onChange={handleChange} autoComplete="off" />
@@ -99,7 +99,7 @@ const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions 
             ))}
           </select>
 
-          <input name="contact" placeholder="Contact" onChange={handleChange} autoComplete="off" />
+          <input name="contact" type='number' placeholder="Contact" onChange={handleChange} autoComplete="off" />
           <input name="address" placeholder="Address" onChange={handleChange} autoComplete="off" />
           <input name="city" placeholder="City" onChange={handleChange} autoComplete="off" />
           <input name="country" placeholder="Country" onChange={handleChange} autoComplete="off" />
@@ -115,10 +115,17 @@ const AddEmployeeModal = ({ onClose, onEmployeeAdded, designations, permissions 
           <input name="confirmPassword" type="password" placeholder="Confirm Password" onChange={handleChange} autoComplete="new-password" />
 
           <div className="modal-actionss">
-            <button type="submit" className="save-btn">Add</button>
-            <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
+            <button type="submit" className="save-btn" disabled={loading}>Add</button>
+            <button type="button" className="cancel-btn" onClick={onClose} disabled={loading}>Cancel</button>
           </div>
         </form>
+
+        {loading && (
+          <div className="loading-overlay">
+            <Loader />
+            <p>Creating employee...</p>
+          </div>
+        )}
       </div>
     </div>
   );

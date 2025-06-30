@@ -4,6 +4,7 @@ import { BASE_URL } from '../../utils/constants';
 import AddClientModal from './addClient/AddClientModal';
 import EditClientModal from './editClient/EditClientModal';
 import Helper from '../../utils/hepler';
+import Loader from '../../utils/Loader';
 
 export default function Client() {
   const [clients, setClients] = useState([]);
@@ -75,7 +76,7 @@ export default function Client() {
     }
   };
 
-  if (loading) return <p className="loading">Loading clients...</p>;
+  if (loading) return <Loader />;
   if (error) return <p className="error">Error: {error}</p>;
 
   return (
@@ -184,6 +185,7 @@ export default function Client() {
         <AddClientModal
           onClose={() => setShowAddModal(false)}
           onSubmit={async (newClient) => {
+            setLoading(true);
             try {
               const res = await fetch(`${BASE_URL}/client/create`, {
                 method: 'POST',
@@ -191,6 +193,7 @@ export default function Client() {
                 body: JSON.stringify(newClient),
               });
               const data = await res.json();
+              setLoading(false);
               if (!res.ok) throw new Error(data.message);
               fetchClients();
             } catch (err) {

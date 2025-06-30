@@ -1,13 +1,12 @@
-// src/components/settings/permissions/AddPermissionModal.jsx
 import React, { useState, useEffect } from 'react';
-import { BASE_URL } from '../../../utils/constants';        // adjust the path
+import { BASE_URL } from '../../../utils/constants';
 import './AddPermissionModal.css';
-import Helper from '../../../utils/hepler'
+import Helper from '../../../utils/hepler';
+import Loader from '../../../utils/Loader'; 
 
 const DEFAULT_PERM = {
   name: '',
-
-  login: true,                     // most roles need Login
+  login: true,
   viewProjects: true,
   editProjects: true,
   viewProjectDetail: true,
@@ -31,10 +30,10 @@ const DEFAULT_PERM = {
 };
 
 export default function AddPermissionModal({ isOpen, onClose, onSave }) {
-  const [perm, setPerm]      = useState(DEFAULT_PERM);
-  const [err, setErr]        = useState('');
+  const [perm, setPerm] = useState(DEFAULT_PERM);
+  const [err, setErr] = useState('');
+  const [isSaving, setIsSaving] = useState(false); // ✅ loader state
 
-  /* reset state every time the dialog opens */
   useEffect(() => {
     if (isOpen) {
       setPerm(DEFAULT_PERM);
@@ -42,7 +41,6 @@ export default function AddPermissionModal({ isOpen, onClose, onSave }) {
     }
   }, [isOpen]);
 
-  /* ----- handlers ----- */
   const toggle = (e) =>
     setPerm((p) => ({ ...p, [e.target.name]: !p[e.target.name] }));
 
@@ -53,12 +51,17 @@ export default function AddPermissionModal({ isOpen, onClose, onSave }) {
     e.preventDefault();
     if (!perm.name.trim()) return setErr('Permission name is required');
 
+    setIsSaving(true); // ✅ show loader
     try {
-      const res  = await fetch(`${BASE_URL}/permission/create`, {
+      const res = await fetch(`${BASE_URL}/permission/create`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'company_id': Helper.getCompanyId() },
+        headers: {
+          'Content-Type': 'application/json',
+          'company_id': Helper.getCompanyId(),
+        },
         body: JSON.stringify(perm),
       });
+
       const data = await res.json();
 
       if (res.status === 201) {
@@ -70,6 +73,8 @@ export default function AddPermissionModal({ isOpen, onClose, onSave }) {
     } catch (ex) {
       console.error(ex);
       setErr('Network error. Please try again.');
+    } finally {
+      setIsSaving(false); // ✅ hide loader
     }
   };
 
@@ -80,7 +85,6 @@ export default function AddPermissionModal({ isOpen, onClose, onSave }) {
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, (c) => c.toUpperCase());
 
-  /* ----- UI ----- */
   return (
     <div className="apm-overlay" onClick={onClose}>
       <div className="apm-dialog" onClick={(e) => e.stopPropagation()}>
@@ -88,47 +92,52 @@ export default function AddPermissionModal({ isOpen, onClose, onSave }) {
 
         {err && <div className="apm-error">{err}</div>}
 
-        <form onSubmit={submit}>
-          <div className="apm-input">
-            <input
-              type="text"
-              placeholder="Permission Name"
-              value={perm.name}
-              onChange={setName}
-            />
+        {isSaving ? (
+          <div className="loader-wrapper">
+            <Loader />
           </div>
+        ) : (
+          <form onSubmit={submit}>
+            <div className="apm-input">
+              <input
+                type="text"
+                placeholder="Permission Name"
+                value={perm.name}
+                onChange={setName}
+              />
+            </div>
 
-          {/* grid */}
-          <div className="apm-grid">
-            {Object.keys(perm)
-              .filter((k) => k !== 'name')
-              .map((key) => (
-                <label key={key} className="apm-checkbox">
-                  <input
-                    type="checkbox"
-                    name={key}
-                    checked={perm[key]}
-                    onChange={toggle}
-                  />
-                  <span className="check" />
-                  {label(key)}
-                </label>
-              ))}
-          </div>
+            <div className="apm-grid">
+              {Object.keys(perm)
+                .filter((k) => k !== 'name')
+                .map((key) => (
+                  <label key={key} className="apm-checkbox">
+                    <input
+                      type="checkbox"
+                      name={key}
+                      checked={perm[key]}
+                      onChange={toggle}
+                    />
+                    <span className="check" />
+                    {label(key)}
+                  </label>
+                ))}
+            </div>
 
-          <div className="apm-actions">
-            <button
-              type="button"
-              className="apm-btn cancel"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="apm-btn save">
-              Save
-            </button>
-          </div>
-        </form>
+            <div className="apm-actions">
+              <button
+                type="button"
+                className="apm-btn cancel"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="apm-btn save">
+                Save
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
