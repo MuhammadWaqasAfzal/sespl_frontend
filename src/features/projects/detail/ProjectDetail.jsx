@@ -191,6 +191,8 @@ export default function ProjectDetail() {
 
       {!loading && (
         <>
+         <h1 className="project-title">{project?.name}</h1> {/* Project title added here */}
+
           <ProjectStatistics expenses={expenseBreakdown} costSummary={costSummary} />
           <GeneralInfo project={project} onEdit={() => setShowEditModal(true)} />
           <PaymentsSection payments={payments} onAdd={() => setShowPaymentModal(true)} onDelete={handleDeletePayment} />

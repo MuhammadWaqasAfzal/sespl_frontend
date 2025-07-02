@@ -123,7 +123,8 @@ export default function Projects() {
                 onClick={(e) => {
                   if (e.target.tagName.toLowerCase() !== 'button') {
                     if (Helper.checkPermission('viewProjectDetail')) {
-                      navigate('/project-detail', { state: { project }, replace: true });
+                      navigate('/project-detail', { state: { project }, replace: false
+                       });
                     }
                   }
                 }}

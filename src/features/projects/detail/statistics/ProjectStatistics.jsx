@@ -6,6 +6,11 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
 } from 'recharts';
 import './ProjectStatistics.css';
 
@@ -22,7 +27,6 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
   const totalSpent = costSummary.totalSpent || 0;
   const totalReceived = costSummary.received || 0;
 
-  const spentPercent = Math.min((totalSpent / totalWithoutTax) * 100, 100).toFixed(1);
   const remaining = Math.max(0, totalWithoutTax - totalSpent);
 
   const receivedData = [
@@ -32,20 +36,20 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
 
   return (
     <div className="statistics-container">
-      <h2>📊 Project Statistics Overview</h2>
+      <h2>📊 Project Statistics</h2>
 
       <div className="progress-card">
         <h3>💰 Budget Utilization</h3>
         <p>This bar shows how much of the project budget has been spent so far.</p>
 
         {totalSpent > totalWithoutTax && (
-          <div style={{ color: 'red', fontWeight: 'bold', margin: '10px 0' }}>
+          <div className="warning-text">
             ⚠️ Warning: Spent amount (Rs.{totalSpent.toLocaleString()}) exceeds the budget (Rs. {totalWithoutTax.toLocaleString()})
           </div>
         )}
 
-        <div style={{ padding: '10px 0', width: '100%' }}>
-          <div style={{ marginBottom: '10px' }}>
+        <div className="progress-container">
+          <div className="budget-label">
             <strong>Total Budget: Rs. {totalWithoutTax.toLocaleString()}</strong>
           </div>
           <div className="progress-bar">
@@ -67,12 +71,11 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
             <span className="spent-label">Rs. {totalSpent.toLocaleString()} spent</span>
             <span className="left-label">Rs. {remaining.toLocaleString()} left</span>
           </div>
-
         </div>
       </div>
 
-
       <div className="chart-row-horizontal">
+        {/* Expense Distribution Pie Chart */}
         <div className="chart-section card">
           <h3>📦 Expense Distribution</h3>
           <p>Breakdown of how funds are distributed across different expense categories.</p>
@@ -111,6 +114,7 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
           </ResponsiveContainer>
         </div>
 
+        {/* Payment Received Pie Chart */}
         <div className="chart-section card">
           <h3>🏦 Payment Received</h3>
           <p>Displays how much of the total payment has been received from the client.</p>
@@ -139,6 +143,26 @@ const ProjectStatistics = ({ expenses = [], costSummary = {} }) => {
             </PieChart>
           </ResponsiveContainer>
         </div>
+      </div>
+
+      {/* Bar chart on a new line */}
+      <div className="chart-section card full-width-bar-chart">
+        <h3>📈 Expense by Type</h3>
+        <p>Bar chart showing each expense category and its total value.</p>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={pieData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip formatter={(value) => `Rs ${value.toLocaleString()}`} />
+            <Legend />
+            <Bar dataKey="value" fill="#8884d8">
+              {pieData.map((_, index) => (
+                <Cell key={`bar-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
