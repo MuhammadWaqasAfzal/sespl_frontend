@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./Dashboard.css";
+import "./dashboard.css";
 import { BASE_URL } from "../../utils/constants";
 import Helper from '../../utils/hepler';
 import Loader from'../../utils/Loader';
